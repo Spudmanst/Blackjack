@@ -44,3 +44,11 @@ TESTED NEW CODE, APPEARS TO WORK AS INTENDED.
 - Added Function - slowType and slowTypeNoLine. I was getting annoyed with certain messages just appearing instantly. I have google'd if you could 
 get python to type slower in the terminal and been guided to use "import sys" and "import time" (I am already using time).
 - Added Feature - susSleep. I wanted to add some suspense when you have Blackjack and finding out if the dealer does or not.
+
+----------
+Git and Github review - NOTE TO SELF ON FIRST USE OF GITHUB
+----------
+I have checked the repository is working as intended. I can see that by changing the filename of Blackjack.py, you cannot easily see the changes made
+as it "removes" everything from the old and then "adds" everything from the new as a completely seperate file. Will keep the filename constant in
+future.
+

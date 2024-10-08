@@ -1,3 +1,5 @@
+# Blackjack version 1.01
+
 import random
 import time
 import sys
