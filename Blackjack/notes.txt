@@ -1,0 +1,31 @@
+---------------------------
+Breakdown of game Blackjack
+---------------------------
+THE BASICS
+- Game is played using standard deck of cards
+- Players are pitted against all other players or against a single Dealer if present ("Dealer" is usually when gambling against the house is involved)
+- Object is to reach or get as close to a score of 21 without going over
+- Closest to 21 wins
+
+RULES
+- Each player is dealt 2 cards
+- The sum of the player's cards equals their score
+- The card's "score" is the value written on the card, i.e. 1 of Diamonds is worth 1 point, 5 of Clubs is worth 5 points, etc
+- Picture cards, i.e. Jack, Queen, King, are worth 10 points.
+- Ace is worth 11 points unless the total score exceeds 21, in which case they may be counted as 1 point instead.
+- On their turn, players may choose to "Hit" (obtain another card) or "Stick" (end their turn)
+- If a player score excees 21, they are declared "Bust" and are out of the game
+- If a dealer is present, they are forced to "Stick" when their score reaches 17 or more
+- Closest to 21 wins, ties are acceptable outcome
+
+THOUGHTS TO COVERT TO CODE
+- Need to create a deck of cards.
+    - 4 suits (use Tuple as do not want to change values by mistake)
+    - 13 valued cards (use Tuple as do not want to change values by mistake) 
+- 11 different points across the cards, points 1 & 11 are interchangable on Ace. (use dictionary as we have value pairs)
+- If player.score > 21 , player bust, i.e. player lose
+- If dealer.score > 21 , dealer bust, i.e. player win
+- When player or dealer score > 21, will need to check for Ace in hand and alter their score.
+    - Need to ensure we do not accidentially loop this. Check number of "ace" in hand and if counted before
+- If dealer.score >= 17 , dealer must "stick"
+- If both player and dealer not "bust", highest score wins
