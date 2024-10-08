@@ -4,11 +4,43 @@ Blackjack-Ver1.0.py
 Game working on basic level using Blackjack rules
 
 Improvements to be made:
-- Constantly changing time.sleep, let's "def stdSleep()" so I can change in one place in future
+- Constantly changing time.sleep, let's "def stdSleep()" so I can change in one place in future (added in 1.01)
 - Option to "replay"/"retry"/"restart" after game completed
 
 Features I would like:
-- Would like custom win annoucement for getting Blackjack (i.e. picture card + ace)
+- Would like custom win annoucement for getting Blackjack (i.e. picture card + ace) (added in 1.01)
 - Would like 5-Card Charlie rule implimented (5 Cards under 21 is better than 21 but lower than Blackjack)
 - Betting
 - Mutliplayer
+
+----------
+Blackjack-Ver1.01.py
+----------
+- Bug found, "adjustForAce" not working as intended, example game Log:
+---
+Dealer reveals hand: King of Clubs and 3 of Diamonds
+Dealer's score = 13
+Dealer receives: Ace of Hearts
+Dealer's new score: 14
+Dealer receives: King of Spades
+Dealer's new score: 14
+Dealer receives: 7 of Diamonds
+Dealer's new score: 21
+Dealer Wins with 21 vs your 17.
+---
+Upon reviewing existing code, function will not work as intended as the "Ace's" will continually be counted when they shouldn't be.
+Example from existing code:
+Ace + 9 + 3 = 23 so "adjustForAce", one Ace found, - 10, new score 13.
+New card provided
+Ace + 9 + 3 + Ace = 24 so "adjustForAce", two Ace found, - 20, new score 4.
+TO FIX:
+adjustForAce needs to manually count from scartch so it may deduct correctly.
+adjustForAce no longer needs playerScore/dealerScore as input in view of change.
+New code to calculate score from existing hand is improvement on existing code used to obtain starting scores, therefore replaced these as well.
+TESTED NEW CODE, APPEARS TO WORK AS INTENDED.
+---
+- Added Feature - BLACKJACK message appears.
+- Change when dealerScore is calculated to same time as playerScore. If either has Blackjack then the game ends much sooner.
+- Added Function - slowType and slowTypeNoLine. I was getting annoyed with certain messages just appearing instantly. I have google'd if you could 
+get python to type slower in the terminal and been guided to use "import sys" and "import time" (I am already using time).
+- Added Feature - susSleep. I wanted to add some suspense when you have Blackjack and finding out if the dealer does or not.
