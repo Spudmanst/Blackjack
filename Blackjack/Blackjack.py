@@ -19,19 +19,11 @@ def slowTypeNoLine(text, delay=0.02):
         sys.stdout.flush()  # Flush the output to ensure it prints immediately
         time.sleep(delay)   # Delay between each character
 
-# Create deck of cards then shuffle
 suits = ["Diamonds", "Hearts", "Spades", "Clubs"]
 values = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"]
-
-cards = []
-
-for suit in suits:
-    for value in values:
-        cards.append(f"{value} of {suit}")
-        
+cards = [f"{value} of {suit}" for suit in suits for value in values]
 random.shuffle(cards)
 
-# Set scores for cards and players start at 0
 scores = {
     "2": 2,
     "3": 3,
@@ -57,71 +49,80 @@ def adjustForAces(hand):
         aceCount -= 1
     return score
 
+# Minor delay functions for gameplay
 def stdSleep():
     time.sleep(0.95)
 
 def susSleep():
     time.sleep(1.5)
-    
-# Provide both dealer and player with 2 cards
-playerHand = [cards.pop() for x in range(2)]
-dealerHand = [cards.pop() for x in range(2)]
 
+# Get number of players
+while True:
+    try:
+         numOfPlayers = int(input("How many players would you like? Minimum 1, Maximum 7: "))
+         if 1 <= numOfPlayers <= 7:
+             break
+         else:
+             slowType("Invalid input, must use a number between 1 - 7 to continue.")
+    except ValueError:
+        slowType("Invalid input, please enter a number between 1 and 7.")
 
-slowType(f"Your hand: {playerHand[0]} and {playerHand[1]}")
-stdSleep()
-slowType(f"Dealer's hand: {dealerHand[0]} and unknown")
-stdSleep()
+# Deal cards to players
+player_hands = {player: [cards.pop() for _ in range(2)] for player in range(1, numOfPlayers + 1)}
+dealerHand = [cards.pop() for _ in range(2)]
 
-# Calculate scores for player and dealer
-playerScore = sum(scores[card.split()[0]] for card in playerHand)
+# Calculate scores for players
+player_score = {player: sum(scores[card.split()[0]] for card in player_hands[player]) for player in range(1, numOfPlayers + 1)}
 dealerScore = sum(scores[card.split()[0]] for card in dealerHand)
 
-# Check for Blackjacks and resolve accordingly
-if dealerScore == 21 and playerScore != 21:
-    slowType(f"Dealer reveals hand: {dealerHand[0]} and {dealerHand[1]}\nDealer has Blackjack and you don't. You lose.")
-    exit()
-elif dealerScore != 21 and playerScore == 21:
-    slowTypeNoLine(f"BLACKJACK!\nDealer reveals hand: {dealerHand[0]} and ")
-    susSleep()
-    slowType(f"{dealerHand[1]}\nDealer cannot match. You win!")
-    exit()
-elif dealerScore == 21 and playerScore == 21:
-    slowTypeNoLine(f"BLACKJACK!\nDealer reveals hand: {dealerHand[0]} and ")
-    susSleep()
-    slowType(f"{dealerHand[1]}\nBoth you and the the Dealer have Blackjack. It's a tie!")
-    exit()
-else:
-    slowType(f"Your Score: {playerScore}")
+# Initialize player win status
+player_win = {player: None for player in range(1, numOfPlayers + 1)}
 
-stdSleep()
-
-# Ask player for input while not "bust"
-while playerScore < 21:
-    action = input("What would you like to do, '(H)it' or '(S)tick'?\n").lower()
-
-    if action == "hit" or action == "h":
-        newCard = cards.pop()
-        playerHand.append(newCard)
-        playerScore += scores[newCard.split()[0]]
-        if playerScore > 21:
-            playerScore = adjustForAces(playerHand)
-        slowType(f"Card received: {newCard}\nNew score: {playerScore}")
-        stdSleep()
-    elif action == "stick" or action == "s":
-        stdSleep()
-        break
-    elif action == "exit" or action == "e":
-        exit()
-    else:
-        print(f"Unknown command, type 'hit' or 'stick' to continue.\nType 'exit' to finish playing")
-
-if playerScore > 21:
-    slowType("Bust! You lose.")
-    exit()
+# Players have their turn
+for player in range(1, numOfPlayers + 1):
+    slowType(f"Dealer's hand: {dealerHand[0]} and unknown")
+    slowType(f"Player {player}'s hand: {player_hands[player][0]} and {player_hands[player][1]}")
     
-# Dealer to play
-slowType(f"Dealer reveals hand: {dealerHand[0]} and {dealerHand[1]}\nDealer's score = {dealerScore}")
+    if player_score[player] == 21:
+        slowType("Blackjack!")
+        player_score[player] = "Blackjack"
+        continue # End current player's turn
+    else: 
+        slowType(f"Player {player}'s score: {player_score[player]}")
+        
+    while player_score[player] < 21:
+        action = input("What would you like to do, '(H)it' or '(S)tick'?\n").lower()
+
+        if action in ("hit", "h"):
+            newCard = cards.pop()
+            player_hands[player].append(newCard)
+            player_score[player] += scores[newCard.split()[0]]
+            if player_score[player] > 21:
+                player_score[player] = adjustForAces(player_hands[player])
+            slowType(f"Card received: {newCard}\nNew score: {player_score[player]}")
+            stdSleep()
+        elif action in ("stick", "s"):
+            stdSleep()
+            break
+        elif action in ("exit", "e"):
+            exit()
+        else:
+            print(f"Unknown command, type 'hit' or 'stick' to continue.\nType 'exit' to finish playing")
+
+    if player_score[player] > 21:
+        slowType(f"Player {player} busts!")
+        player_win[player] = "Bust"
+    
+    stdSleep()
+
+# Dealer plays
+slowType(f"Dealer reveals hand: {dealerHand[0]} and {dealerHand[1]}")
+
+if dealerScore == 21:
+    slowType("Dealer has Blackjack.")
+else:
+    slowType(f"Dealer's score = {dealerScore}")
+
 stdSleep()
 
 while dealerScore < 17:
@@ -132,11 +133,19 @@ while dealerScore < 17:
     slowType(f"Dealer receives: {newCard}\nDealer's new score: {dealerScore}")
     stdSleep()
 
-if dealerScore > 21:
-    slowType(f"Dealer Bust. You win!")
-elif dealerScore > playerScore:
-    slowType(f"Dealer Wins with {dealerScore} vs your {playerScore}.")
-elif dealerScore < playerScore:
-    slowType(f"You win with {playerScore} vs Dealer's {dealerScore}!")
-else:
-    slowType("It's a tie!")
+# Calculate winners
+for player in range(1, numOfPlayers +1):
+    if player_win[player] is None:
+        if player_score[player] > dealerScore and player_score[player] <= 21:
+            player_win[player] = True
+            slowType(f"Player {player} wins with {player_score[player]} vs the Dealer's {dealerScore}!")
+        elif player_score[player] == dealerScore:
+            player_win[player] = "Tie"
+            slowType(f"Player {player} ties with {player_score[player]}!")
+        else:
+            player_win[player] = False
+            slowType(f"Player {player} loses with {player_score[player]} vs the Dealer's {dealerScore}!")
+    elif player_win[player] == "Blackjack":
+        slowType(f"Player {player} wins with Blackjack!")
+    else:
+        slowType(f"Player {player} busted!")

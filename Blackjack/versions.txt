@@ -46,3 +46,12 @@ I have checked the repository is working as intended. I can see that by changing
 as it "removes" everything from the old and then "adds" everything from the new as a completely seperate file. Will keep the filename constant in
 future.
 
+----------
+Blackjack-Ver1.02.py
+----------
+- Added Feature - Multiplayer.
+- Added Dictionary - player_win - Purpose of this is to assist with future features, such as Betting. We specifically record when a player obtains
+Blackjack as this pays out more than regular wins. 
+- Cleaner code - Adding multiplayer required and overhaul of the coding in most areas. This allowed for certain areas to be reviewed again and tidied
+if needed. Examples - Line 24: Creating cards has now been condensed into one line instead of the previous 5 lines. - Line 96: condense 
+"if action == _ or action == _:" to "if action in ("hit", "h"):
