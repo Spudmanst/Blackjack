@@ -55,3 +55,17 @@ Blackjack as this pays out more than regular wins.
 - Cleaner code - Adding multiplayer required and overhaul of the coding in most areas. This allowed for certain areas to be reviewed again and tidied
 if needed. Examples - Line 24: Creating cards has now been condensed into one line instead of the previous 5 lines. - Line 96: condense 
 "if action == _ or action == _:" to "if action in ("hit", "h"):
+
+----------
+Blackjack-Ver1.03.py
+----------
+- Noticed dealerScore and many other functions has different naming structure compared to player_score (which I think the latter is easier to read)
+therefore have changed to dealer_score (as well as all the others) to bring inline.
+- Apparently I didn't test as well as I thought, errors calculating winners. Dealer busts but still classes the players as losing. Code amended.
+- During testing had a starting hand with two Aces which the game considered "Bust". Reviewed code, adjust_for_aces doesn't happen until after the scores are first
+calculated, so have amended so it will adjust_for_aces when it first calculates a score.
+- In view of upcoming "Betting", realised we need the game to be able to loop, so the game is now "def start_game()" 
+- Felt we had too many std_sleep, slowing the game too much so removed some (mainly when player is dealt new card)
+- Noticed during testing with 7 players and replaying that the deck of cards would expire. The creation of a shuffled deck of cards is now its own
+function (create_shuffled_deck()) and is called at the beginning of start_game().
+- Rename versions.txt to change_log.txt, feels more appropriate.
