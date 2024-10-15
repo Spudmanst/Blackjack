@@ -80,3 +80,9 @@ For now I will try and use Semantic Versioning to the best of my knownledge.
 - I've also been advised that my "change_log" is not really required as GitHub can easily fulfill this role as long as you update frequently and often. So I will
 also attempt this moving forward, however I do wish to keep my change_log for now.
 - Noticed numOfPlayers, aceCount and newCard are not using same naming structure, so have renamed accordingly (I <3 F2)
+
+----------
+Blackjack-Ver1.0.5.py
+----------
+- Decided anything printed on the terminal that is not the game progressing forward, i.e. errors, does not need to be slow_typed.
+- Created ASCII art for beginning of game

@@ -1,4 +1,4 @@
-# Blackjack version 1.04
+# Blackjack version 1.0.5
 
 import random
 import time
@@ -61,6 +61,15 @@ def sus_sleep():
 def divide_lines():
     print("----------")
 
+print(f"""
+  ____  _            _        _            _    _
+ |  _ \| |          | |      | |          | |  | |
+ | |_) | | __ _  ___| | __   | | __ _  ___| | _| |
+ |  _ <| |/ _` |/ __| |/ /   | |/ _` |/ __| |/ / |
+ | |_) | | (_| | (__|   < |__| | (_| | (__|   <|_|
+ |____/|_|\__,_|\___|_|\_\____/ \__,_|\___|_|\_(_)
+                                                  """)
+
 def start_game():
     cards = create_shuffled_deck()
     
@@ -71,9 +80,9 @@ def start_game():
             if 1 <= num_of_players <= 7:
                 break
             else:
-                slow_type("Invalid input, must use a number between 1 - 7 to continue.")
+                print("Invalid input, must use a number between 1 - 7 to continue.")
         except ValueError:
-            slow_type("Invalid input, please enter a number between 1 and 7.")
+            print("Invalid input, please enter a number between 1 and 7.")
 
     # Deal cards to players
     player_hands = {player: [cards.pop() for _ in range(2)] for player in range(1, num_of_players + 1)}
@@ -185,4 +194,4 @@ while True:
         divide_lines()
         break
     else:
-        slow_type("Unknown command, type 'replay' or 'exit'.")
+        print("Unknown command, type 'replay' or 'exit'.")
