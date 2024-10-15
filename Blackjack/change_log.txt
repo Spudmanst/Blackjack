@@ -96,3 +96,11 @@ players to carry over their "credits" from round to round without resetting.
 then the second time the game would play correctly but immediately start a third game without prompting for "Replay or Exit". Solution was to replace start_game()
 with "continue" if "replay" or "r" was selected.
 - Removed new line from asking if player wants to Hit or Stick, felt like the page was getting flooded.
+
+----------
+Blackjack-Ver1.1.1.py
+----------
+- Re-orderd "def" to be in alphabetical order except start_game() which remains last in the list
+- Sped up game if Dealer has Blackjack by revealing it straight away and checking if any player can match.
+- Found final loop asking to replay or exit not working. If user didn't type anything valid, it would advise and the start a new game anyway. Fixed by creating
+an inner loop which needs to be broken out of or sys.exit().
