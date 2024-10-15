@@ -1,0 +1,98 @@
+----------
+Blackjack-Ver1.0.py
+----------
+Game working on basic level using Blackjack rules
+
+Improvements to be made:
+- Constantly changing time.sleep, let's "def stdSleep()" so I can change in one place in future (added in 1.01)
+- Option to "replay"/"retry"/"restart" after game completed
+
+----------
+Blackjack-Ver1.01.py
+----------
+- Bug found, "adjustForAce" not working as intended, example game Log:
+---
+Dealer reveals hand: King of Clubs and 3 of Diamonds
+Dealer's score = 13
+Dealer receives: Ace of Hearts
+Dealer's new score: 14
+Dealer receives: King of Spades
+Dealer's new score: 14
+Dealer receives: 7 of Diamonds
+Dealer's new score: 21
+Dealer Wins with 21 vs your 17.
+---
+Upon reviewing existing code, function will not work as intended as the "Ace's" will continually be counted when they shouldn't be.
+Example from existing code:
+Ace + 9 + 3 = 23 so "adjustForAce", one Ace found, - 10, new score 13.
+New card provided
+Ace + 9 + 3 + Ace = 24 so "adjustForAce", two Ace found, - 20, new score 4.
+TO FIX:
+adjustForAce needs to manually count from scartch so it may deduct correctly.
+adjustForAce no longer needs playerScore/dealerScore as input in view of change.
+New code to calculate score from existing hand is improvement on existing code used to obtain starting scores, therefore replaced these as well.
+TESTED NEW CODE, APPEARS TO WORK AS INTENDED.
+---
+- Added Feature - BLACKJACK message appears.
+- Change when dealerScore is calculated to same time as playerScore. If either has Blackjack then the game ends much sooner.
+- Added Function - slowType and slowTypeNoLine. I was getting annoyed with certain messages just appearing instantly. I have google'd if you could 
+get python to type slower in the terminal and been guided to use "import sys" and "import time" (I am already using time).
+- Added Feature - susSleep. I wanted to add some suspense when you have Blackjack and finding out if the dealer does or not.
+
+----------
+Git and Github review - NOTE TO SELF ON FIRST USE OF GITHUB
+----------
+I have checked the repository is working as intended. I can see that by changing the filename of Blackjack.py, you cannot easily see the changes made
+as it "removes" everything from the old and then "adds" everything from the new as a completely seperate file. Will keep the filename constant in
+future.
+
+----------
+Blackjack-Ver1.02.py
+----------
+- Added Feature - Multiplayer.
+- Added Dictionary - player_win - Purpose of this is to assist with future features, such as Betting. We specifically record when a player obtains
+Blackjack as this pays out more than regular wins. 
+- Cleaner code - Adding multiplayer required and overhaul of the coding in most areas. This allowed for certain areas to be reviewed again and tidied
+if needed. Examples - Line 24: Creating cards has now been condensed into one line instead of the previous 5 lines. - Line 96: condense 
+"if action == _ or action == _:" to "if action in ("hit", "h"):
+
+----------
+Blackjack-Ver1.03.py
+----------
+- Noticed dealerScore and many other functions has different naming structure compared to player_score (which I think the latter is easier to read)
+therefore have changed to dealer_score (as well as all the others) to bring inline.
+- Apparently I didn't test as well as I thought, errors calculating winners. Dealer busts but still classes the players as losing. Code amended.
+- During testing had a starting hand with two Aces which the game considered "Bust". Reviewed code, adjust_for_aces doesn't happen until after the scores are first
+calculated, so have amended so it will adjust_for_aces when it first calculates a score.
+- In view of upcoming "Betting", realised we need the game to be able to loop, so the game is now "def start_game()" 
+- Felt we had too many std_sleep, slowing the game too much so removed some (mainly when player is dealt new card)
+- Noticed during testing with 7 players and replaying that the deck of cards would expire. The creation of a shuffled deck of cards is now its own
+function (create_shuffled_deck()) and is called at the beginning of start_game().
+- Rename versions.txt to change_log.txt, feels more appropriate.
+
+----------
+Blackjack-Ver1.0.4.py
+----------
+- After having a chat with some people I know who code for a living, I've been advised to look up "Semantic Versioning", i.e. software versioning.
+I have reviewed and understand that my numbering sequence is not quite right because I would consider adding Multiplayer a Major update, so at that point
+I should have called it Ver 2.0.0. Then after finding the bug introduced within the Multiplayer update, the fix or "hot patch" would have been version 2.0.1.
+For now I will try and use Semantic Versioning to the best of my knownledge.
+- I've also been advised that my "change_log" is not really required as GitHub can easily fulfill this role as long as you update frequently and often. So I will
+also attempt this moving forward, however I do wish to keep my change_log for now.
+- Noticed numOfPlayers, aceCount and newCard are not using same naming structure, so have renamed accordingly (I <3 F2)
+
+----------
+Blackjack-Ver1.0.5.py
+----------
+- Decided anything printed on the terminal that is not the game progressing forward, i.e. errors, does not need to be slow_typed.
+- Created ASCII art for beginning of game
+
+----------
+Blackjack-Ver1.1.0.py
+----------
+- ADDED FEATURE - ROUNDS - In view of upcoming "Betting" feature, thought it would make sence to have a number of rounds be played, therefore allowing
+players to carry over their "credits" from round to round without resetting. 
+- After more testing, found that I had too many "start_game" loops happening, causing an issue when rounds was introduced. The game would play correctly first time,
+then the second time the game would play correctly but immediately start a third game without prompting for "Replay or Exit". Solution was to replace start_game()
+with "continue" if "replay" or "r" was selected.
+- Removed new line from asking if player wants to Hit or Stick, felt like the page was getting flooded.
