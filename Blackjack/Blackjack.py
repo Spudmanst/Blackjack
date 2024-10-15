@@ -1,4 +1,4 @@
-# Blackjack version 1.03
+# Blackjack version 1.04
 
 import random
 import time
@@ -45,10 +45,10 @@ scores = {
 # Prep to check for Aces If player "bust" and change score
 def adjust_for_aces(hand):
     score = sum(scores[card.split()[0]] for card in hand)
-    aceCount = sum(1 for card in hand if card.split()[0] == "Ace")
-    while score > 21 and aceCount > 0:
+    ace_count = sum(1 for card in hand if card.split()[0] == "Ace")
+    while score > 21 and ace_count > 0:
         score -= 10
-        aceCount -= 1
+        ace_count -= 1
     return score
 
 # Minor delay functions for gameplay
@@ -67,8 +67,8 @@ def start_game():
     # Get number of players
     while True:
         try:
-            numOfPlayers = int(input("How many players would you like? Minimum 1, Maximum 7: "))
-            if 1 <= numOfPlayers <= 7:
+            num_of_players = int(input("How many players would you like? Minimum 1, Maximum 7: "))
+            if 1 <= num_of_players <= 7:
                 break
             else:
                 slow_type("Invalid input, must use a number between 1 - 7 to continue.")
@@ -76,18 +76,18 @@ def start_game():
             slow_type("Invalid input, please enter a number between 1 and 7.")
 
     # Deal cards to players
-    player_hands = {player: [cards.pop() for _ in range(2)] for player in range(1, numOfPlayers + 1)}
+    player_hands = {player: [cards.pop() for _ in range(2)] for player in range(1, num_of_players + 1)}
     dealer_hand = [cards.pop() for _ in range(2)]
 
     # Calculate scores for players
-    player_score = {player: adjust_for_aces(player_hands[player]) for player in range(1, numOfPlayers + 1)}
+    player_score = {player: adjust_for_aces(player_hands[player]) for player in range(1, num_of_players + 1)}
     dealer_score = adjust_for_aces(dealer_hand)
 
     # Initialize player win status
-    player_win = {player: None for player in range(1, numOfPlayers + 1)}
+    player_win = {player: None for player in range(1, num_of_players + 1)}
 
     # Players have their turn
-    for player in range(1, numOfPlayers + 1):
+    for player in range(1, num_of_players + 1):
         slow_type(f"Dealer's hand: {dealer_hand[0]} and unknown")
         slow_type(f"Player {player}'s hand: {player_hands[player][0]} and {player_hands[player][1]}")
         
@@ -103,12 +103,12 @@ def start_game():
             action = input("What would you like to do, '(H)it' or '(S)tick'?\n").lower()
 
             if action in ("hit", "h"):
-                newCard = cards.pop()
-                player_hands[player].append(newCard)
-                player_score[player] += scores[newCard.split()[0]]
+                new_card = cards.pop()
+                player_hands[player].append(new_card)
+                player_score[player] += scores[new_card.split()[0]]
                 if player_score[player] > 21:
                     player_score[player] = adjust_for_aces(player_hands[player])
-                slow_type(f"Card received: {newCard}\nNew score: {player_score[player]}")
+                slow_type(f"Card received: {new_card}\nNew score: {player_score[player]}")
             elif action in ("stick", "s"):
                 slow_type(f"Player {player} is sticking with a score of {player_score[player]}")
                 break
@@ -139,11 +139,11 @@ def start_game():
     std_sleep()
 
     while dealer_score < 17:
-        newCard = cards.pop()
-        dealer_hand.append(newCard)
-        dealer_score += scores[newCard.split()[0]]
+        new_card = cards.pop()
+        dealer_hand.append(new_card)
+        dealer_score += scores[new_card.split()[0]]
         dealer_score = adjust_for_aces(dealer_hand)
-        slow_type(f"Dealer receives: {newCard}\nDealer's new score: {dealer_score}")
+        slow_type(f"Dealer receives: {new_card}\nDealer's new score: {dealer_score}")
     
     if dealer_score > 21:
         slow_type("Dealer has busted!")
@@ -152,7 +152,7 @@ def start_game():
     std_sleep()
 
     # Calculate winners
-    for player in range(1, numOfPlayers +1):
+    for player in range(1, num_of_players +1):
         if player_win[player] is None:
             if dealer_score > 21:
                 player_win[player] = True

@@ -3,3 +3,5 @@ Features I would like:
 - Would like 5-Card Charlie rule implimented (5 Cards under 21 is better than 21 but lower than Blackjack)
 - Multiplayer (added in 1.02)
 - Betting
+- Add "help" to explain the game and special rules
+- Once Betting is available, understand more complex betting rules such as insurance and impliment

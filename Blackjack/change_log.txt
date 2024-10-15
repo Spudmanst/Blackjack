@@ -69,3 +69,14 @@ calculated, so have amended so it will adjust_for_aces when it first calculates 
 - Noticed during testing with 7 players and replaying that the deck of cards would expire. The creation of a shuffled deck of cards is now its own
 function (create_shuffled_deck()) and is called at the beginning of start_game().
 - Rename versions.txt to change_log.txt, feels more appropriate.
+
+----------
+Blackjack-Ver1.0.4.py
+----------
+- After having a chat with some people I know who code for a living, I've been advised to look up "Semantic Versioning", i.e. software versioning.
+I have reviewed and understand that my numbering sequence is not quite right because I would consider adding Multiplayer a Major update, so at that point
+I should have called it Ver 2.0.0. Then after finding the bug introduced within the Multiplayer update, the fix or "hot patch" would have been version 2.0.1.
+For now I will try and use Semantic Versioning to the best of my knownledge.
+- I've also been advised that my "change_log" is not really required as GitHub can easily fulfill this role as long as you update frequently and often. So I will
+also attempt this moving forward, however I do wish to keep my change_log for now.
+- Noticed numOfPlayers, aceCount and newCard are not using same naming structure, so have renamed accordingly (I <3 F2)
