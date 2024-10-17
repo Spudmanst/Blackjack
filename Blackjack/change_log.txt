@@ -104,3 +104,9 @@ Blackjack-Ver1.1.1.py
 - Sped up game if Dealer has Blackjack by revealing it straight away and checking if any player can match.
 - Found final loop asking to replay or exit not working. If user didn't type anything valid, it would advise and the start a new game anyway. Fixed by creating
 an inner loop which needs to be broken out of or sys.exit().
+
+----------
+Blackjack-Ver1.2.0.py
+----------
+- Previous update checked with Dealer Blackjack earlier on, so have removed the same check later (lines 188 - 190)
+- Implimented 5-Card Charlie rule, tested and appears to work as intended.

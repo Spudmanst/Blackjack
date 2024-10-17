@@ -1,4 +1,4 @@
-# Blackjack version 1.1.1
+# Blackjack version 1.2.0
 
 import random
 import time
@@ -12,6 +12,12 @@ def adjust_for_aces(hand):
         score -= 10
         ace_count -= 1
     return score
+
+def charlie_check(hand, score):
+    if len(hand) == 5 and score < 22:
+        return "Charlie"
+    else:
+        return "None"
 
 def create_shuffled_deck():
     suits = ["Diamonds", "Hearts", "Spades", "Clubs"]
@@ -153,6 +159,10 @@ def start_game():
                         if player_score[player] > 21:
                             player_score[player] = adjust_for_aces(player_hands[player])
                         slow_type(f"Card received: {new_card}\nNew score: {player_score[player]}")
+                        if charlie_check(player_hands[player], player_score[player]) == "Charlie":
+                            player_win[player] = "Charlie"
+                            slow_type(f"Player {player} has 5-Card Charlie!")
+                            break
                     elif action in ("stick", "s"):
                         slow_type(f"Player {player} is sticking with a score of {player_score[player]}")
                         break
@@ -174,11 +184,7 @@ def start_game():
 
             # Dealer plays
             slow_type(f"Dealer reveals hand: {dealer_hand[0]} and {dealer_hand[1]}")
-
-            if dealer_score == 21:
-                slow_type("Dealer has Blackjack.")
-            else:
-                slow_type(f"Dealer's score = {dealer_score}")
+            slow_type(f"Dealer's score = {dealer_score}")
 
             std_sleep()
 
@@ -212,6 +218,8 @@ def start_game():
                         slow_type(f"Player {player} loses with {player_score[player]} vs the Dealer's {dealer_score}!")
                 elif player_win[player] == "Blackjack":
                     slow_type(f"Player {player} wins with Blackjack!")
+                elif player_win[player] == "Charlie":
+                    slow_type(f"Player {player} wins with 5-Card Charlie!")
                 else:
                     slow_type(f"Player {player} busted!")
         
