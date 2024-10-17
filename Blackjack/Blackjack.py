@@ -1,4 +1,4 @@
-# Blackjack version 1.2.0
+# Blackjack version 2.0.0
 
 import random
 import time
@@ -45,6 +45,18 @@ scores = {
     "Ace": 11
 }
 
+def player_payout(win, bet):
+    if win == "Blackjack":
+        return (bet * 1.5)
+    elif win == "Charlie":
+        return (bet * 1.2)
+    elif win == False:
+        return (-bet)
+    elif win == "Push":
+        return 0 
+    else: # Last left is True
+        return bet
+        
 def slow_type(text, delay=0.02):
     for char in text:
         sys.stdout.write(char)
@@ -81,6 +93,16 @@ def start_game():
             
     while True:
         try:
+            starting_cash = int(input("How many money should all players start with? Minimum $10, Maximum $10000: $"))
+            if 10 <= starting_cash <= 10000:
+                break
+            else:
+                print("Invalid input, must use a whole number between 10 and 10000 to continue.")
+        except ValueError:
+            print("Invalid input, please enter a whole number between 10 and 10000 (don't use commas).")
+            
+    while True:
+        try:
             num_of_rounds = int(input("How many rounds would you like? Minimum 1, Maximum 10: "))
             if 1 <= num_of_rounds <= 10:
                 break
@@ -88,6 +110,11 @@ def start_game():
                 print("Invalid input, must use a number between 1 - 10 to continue.")
         except ValueError:
             print("Invalid input, please enter a number between 1 and 10.")
+    
+    player_cash = {} 
+    
+    for player in range(1, num_of_players + 1):
+        player_cash[player] = int(starting_cash)
     
     round_number = 1
     
@@ -97,6 +124,28 @@ def start_game():
         divide_lines() 
         cards = create_shuffled_deck()
         sus_sleep()
+        
+        player_bets = {}
+        
+        for player in range(1, num_of_players + 1):
+            if player_cash[player] < 1:
+                player_bets[player] = 0
+                slow_type(f"Player {player} doesn't have enough funds to bet!")
+            else:
+                while True:
+                    try:
+                        bet = input(f"How much is Player {player} betting? $")
+                        bet = int(bet)
+                        
+                        if bet > player_cash[player]:
+                            print(f"Not enough funds, maximum available to Player {player} is ${player_cash[player]}.")
+                        elif bet < 1:
+                            print("Must bet at least $1 or more")
+                        else:
+                            player_bets[player] = bet
+                            break
+                    except ValueError:
+                        print(f"Invalid input, please enter a number between $1 and ${player_cash[player]}.")
 
         # Deal cards to players
         player_hands = {player: [cards.pop() for _ in range(2)] for player in range(1, num_of_players + 1)}
@@ -211,7 +260,7 @@ def start_game():
                         player_win[player] = True
                         slow_type(f"Player {player} wins with {player_score[player]} vs the Dealer's {dealer_score}!")
                     elif player_score[player] == dealer_score:
-                        player_win[player] = "Tie"
+                        player_win[player] = "Push"
                         slow_type(f"Player {player} ties with {player_score[player]}!")
                     else:
                         player_win[player] = False
@@ -221,7 +270,12 @@ def start_game():
                 elif player_win[player] == "Charlie":
                     slow_type(f"Player {player} wins with 5-Card Charlie!")
                 else:
+                    player_win[player] = False
                     slow_type(f"Player {player} busted!")
+                player_cash[player] += player_payout(player_win[player], player_bets[player])
+            
+            for player in range(1, num_of_players +1):
+                slow_type(f"Player {player} has ${player_cash[player]} remaining.")
         
         sus_sleep()        
         round_number += 1

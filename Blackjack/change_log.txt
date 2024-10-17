@@ -1,5 +1,5 @@
 ----------
-Blackjack-Ver1.0.py
+Blackjack-Ver 1.0.py
 ----------
 Game working on basic level using Blackjack rules
 
@@ -8,7 +8,7 @@ Improvements to be made:
 - Option to "replay"/"retry"/"restart" after game completed
 
 ----------
-Blackjack-Ver1.01.py
+Blackjack-Ver 1.01.py
 ----------
 - Bug found, "adjustForAce" not working as intended, example game Log:
 ---
@@ -47,7 +47,7 @@ as it "removes" everything from the old and then "adds" everything from the new 
 future.
 
 ----------
-Blackjack-Ver1.02.py
+Blackjack-Ver 1.02.py
 ----------
 - Added Feature - Multiplayer.
 - Added Dictionary - player_win - Purpose of this is to assist with future features, such as Betting. We specifically record when a player obtains
@@ -57,7 +57,7 @@ if needed. Examples - Line 24: Creating cards has now been condensed into one li
 "if action == _ or action == _:" to "if action in ("hit", "h"):
 
 ----------
-Blackjack-Ver1.03.py
+Blackjack-Ver 1.03.py
 ----------
 - Noticed dealerScore and many other functions has different naming structure compared to player_score (which I think the latter is easier to read)
 therefore have changed to dealer_score (as well as all the others) to bring inline.
@@ -71,7 +71,7 @@ function (create_shuffled_deck()) and is called at the beginning of start_game()
 - Rename versions.txt to change_log.txt, feels more appropriate.
 
 ----------
-Blackjack-Ver1.0.4.py
+Blackjack-Ver 1.0.4.py
 ----------
 - After having a chat with some people I know who code for a living, I've been advised to look up "Semantic Versioning", i.e. software versioning.
 I have reviewed and understand that my numbering sequence is not quite right because I would consider adding Multiplayer a Major update, so at that point
@@ -82,13 +82,13 @@ also attempt this moving forward, however I do wish to keep my change_log for no
 - Noticed numOfPlayers, aceCount and newCard are not using same naming structure, so have renamed accordingly (I <3 F2)
 
 ----------
-Blackjack-Ver1.0.5.py
+Blackjack-Ver 1.0.5.py
 ----------
 - Decided anything printed on the terminal that is not the game progressing forward, i.e. errors, does not need to be slow_typed.
 - Created ASCII art for beginning of game
 
 ----------
-Blackjack-Ver1.1.0.py
+Blackjack-Ver 1.1.0.py
 ----------
 - ADDED FEATURE - ROUNDS - In view of upcoming "Betting" feature, thought it would make sence to have a number of rounds be played, therefore allowing
 players to carry over their "credits" from round to round without resetting. 
@@ -98,7 +98,7 @@ with "continue" if "replay" or "r" was selected.
 - Removed new line from asking if player wants to Hit or Stick, felt like the page was getting flooded.
 
 ----------
-Blackjack-Ver1.1.1.py
+Blackjack-Ver 1.1.1.py
 ----------
 - Re-orderd "def" to be in alphabetical order except start_game() which remains last in the list
 - Sped up game if Dealer has Blackjack by revealing it straight away and checking if any player can match.
@@ -106,7 +106,17 @@ Blackjack-Ver1.1.1.py
 an inner loop which needs to be broken out of or sys.exit().
 
 ----------
-Blackjack-Ver1.2.0.py
+Blackjack-Ver 1.2.0.py
 ----------
 - Previous update checked with Dealer Blackjack earlier on, so have removed the same check later (lines 188 - 190)
 - Implimented 5-Card Charlie rule, tested and appears to work as intended.
+
+----------
+Blackjack-Ver 2.0.0.py
+----------
+- Betting has been implimented, tested and appears functional. Betting takes into consideration the type of win and credits
+the player accordingly.
+- ADDED on "todo" 
+    - Skips player turn if cannot bet.
+    - Provide scoreboard when game is over (in order)
+    - Allow players to name themselves

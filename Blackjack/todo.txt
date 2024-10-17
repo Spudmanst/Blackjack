@@ -1,7 +1,10 @@
 Features I would like:
-- Would like custom win annoucement for getting Blackjack (i.e. picture card + ace) (added in 1.01)
-- Would like 5-Card Charlie rule implimented (5 Cards under 21 is better than 21 but lower than Blackjack)
-- Multiplayer (added in 1.02)
-- Betting
+- Would like custom win annoucement for getting Blackjack (i.e. picture card + ace) (ADDED IN 1.01)
+- Would like 5-Card Charlie rule implimented (5 Cards under 21 is better than 21 but lower than Blackjack) (ADDED IN 1.2.0)
+- Multiplayer (ADDED IN 1.02)
+- Betting (ADDED IN 2.0.0)
 - Add "help" to explain the game and special rules
 - Once Betting is available, understand more complex betting rules such as insurance and impliment
+- Skips player turn if cannot bet.
+- Provide scoreboard when game is over (in order)
+- Allow players to name themselves
