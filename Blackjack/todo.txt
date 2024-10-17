@@ -8,3 +8,4 @@ Features I would like:
 - Skips player turn if cannot bet.
 - Provide scoreboard when game is over (in order)
 - Allow players to name themselves
+- Allow players to turn off betting
