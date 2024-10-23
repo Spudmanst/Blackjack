@@ -1,4 +1,4 @@
-# Blackjack version 2.0.1
+# Blackjack version 2.1.0
 
 import random
 import time
@@ -61,7 +61,7 @@ def player_payout(win, bet):
         return (bet * 1.2)
     elif win == False:
         return (-bet)
-    elif win == "Push":
+    elif win == "Push" or "did_not_bet":
         return 0 
     else: # Last left is True
         return bet
@@ -146,6 +146,7 @@ def start_game():
         for player in range(1, num_of_players + 1):
             if player_cash[player] < 1:
                 player_bets[player] = 0
+                player_win[player] = "did_not_bet"
                 slow_type(f"Player {player} doesn't have enough funds to bet!")
             else:
                 while True:
@@ -162,17 +163,20 @@ def start_game():
                             break
                     except ValueError:
                         print(f"Invalid input, please enter a number between $1 and ${player_cash[player]}.")
+                        
+        divide_lines()
+        std_sleep()
 
         # Deal cards to players
-        player_hands = {player: [cards.pop() for _ in range(2)] for player in range(1, num_of_players + 1)}
+        player_hands = {player: [cards.pop() for _ in range(2)] for player in range(1, num_of_players + 1) if player_bets[player] > 0}
         dealer_hand = [cards.pop() for _ in range(2)]
 
         # Calculate scores for players
-        player_score = {player: adjust_for_aces(player_hands[player]) for player in range(1, num_of_players + 1)}
+        player_score = {player: adjust_for_aces(player_hands[player]) for player in range(1, num_of_players + 1) if player_bets[player] > 0}
         dealer_score = adjust_for_aces(dealer_hand)
 
-        # Initialize player win status
-        player_win = {player: None for player in range(1, num_of_players + 1)}
+        # Initialize player win status, set to "did_not_bet" if needed.
+        player_win = {player: (None if player_bets[player] > 0 else "did_not_bet") for player in range(1, num_of_players + 1)}
         
         # If Dealer has Blackjack then skip normal game process as no one can beat the dealer, they can only match Blackjack to draw/push/tie.
         if dealer_score == 21:
@@ -182,6 +186,9 @@ def start_game():
             
             # Advise player what cards they had, if they have Blackjack then set win status to Push
             for player in range(1, num_of_players + 1):
+                # Skip player if they didn't bet
+                if player_bets[player] == 0:
+                    continue
                 slow_type(f"Player {player}'s hand: {player_hands[player][0]} and {player_hands[player][1]}")
                 
                 if player_score[player] == 21:
@@ -206,50 +213,54 @@ def start_game():
         else:
             # Players have their turn
             for player in range(1, num_of_players + 1):
-                slow_type(f"Dealer's hand: {dealer_hand[0]} and unknown")
-                slow_type(f"Player {player}'s hand: {player_hands[player][0]} and {player_hands[player][1]}")
-                
-                # Auto "stick" players on 21, otherwise ask what they would like to do.
-                if player_score[player] == 21:
-                    slow_type("Blackjack!")
-                    player_win[player] = "Blackjack"
-                    divide_lines()
-                    continue # End current player's turn
-                else: 
-                    slow_type(f"Player {player}'s score: {player_score[player]}")
+                if player_bets[player] != 0:
+                    slow_type(f"Dealer's hand: {dealer_hand[0]} and unknown")
+                    slow_type(f"Player {player}'s hand: {player_hands[player][0]} and {player_hands[player][1]}")
                     
-                while player_score[player] < 21:
-                    action = input("What would you like to do, '(H)it' or '(S)tick'? ").lower()
+                    # Auto "stick" players on 21, otherwise ask what they would like to do.
+                    if player_score[player] == 21:
+                        slow_type("Blackjack!")
+                        player_win[player] = "Blackjack"
+                        divide_lines()
+                        continue # End current player's turn
+                    else: 
+                        slow_type(f"Player {player}'s score: {player_score[player]}")
+                        
+                    while player_score[player] < 21:
+                        action = input("What would you like to do, '(H)it' or '(S)tick'? ").lower()
 
-                    if action in ("hit", "h"):
-                        new_card = cards.pop()
-                        player_hands[player].append(new_card)
-                        player_score[player] += scores[new_card.split()[0]]
-                        # If score exceeds 21 then use def to check for Aces and amend score accordingly.
-                        if player_score[player] > 21:
-                            player_score[player] = adjust_for_aces(player_hands[player])
-                        slow_type(f"Card received: {new_card}\nNew score: {player_score[player]}")
-                        # If player has 5 Card Charlie then end turn
-                        if charlie_check(player_hands[player], player_score[player]) == "Charlie":
-                            player_win[player] = "Charlie"
-                            slow_type(f"Player {player} has 5-Card Charlie!")
+                        if action in ("hit", "h"):
+                            new_card = cards.pop()
+                            player_hands[player].append(new_card)
+                            player_score[player] += scores[new_card.split()[0]]
+                            # If score exceeds 21 then use def to check for Aces and amend score accordingly.
+                            if player_score[player] > 21:
+                                player_score[player] = adjust_for_aces(player_hands[player])
+                            slow_type(f"Card received: {new_card}\nNew score: {player_score[player]}")
+                            # If player has 5 Card Charlie then end turn
+                            if charlie_check(player_hands[player], player_score[player]) == "Charlie":
+                                player_win[player] = "Charlie"
+                                slow_type(f"Player {player} has 5-Card Charlie!")
+                                break
+                        elif action in ("stick", "s"):
+                            slow_type(f"Player {player} is sticking with a score of {player_score[player]}")
                             break
-                    elif action in ("stick", "s"):
-                        slow_type(f"Player {player} is sticking with a score of {player_score[player]}")
-                        break
-                    elif action in ("exit", "e"):
-                        print("Exiting game.")
-                        exit()
-                    else:
-                        print(f"Unknown command, type 'hit' or 'stick' to continue.\nType 'exit' to finish playing")
+                        elif action in ("exit", "e"):
+                            print("Exiting game.")
+                            exit()
+                        else:
+                            print(f"Unknown command, type 'hit' or 'stick' to continue.\nType 'exit' to finish playing")
 
-                if player_score[player] > 21:
-                    slow_type(f"Player {player} busts!")
-                    player_win[player] = "Bust"
-                '''
-                elif player_score[player] == 21 and player_win[player] != "Blackjack":
-                    slow_type(f"Player {player} is sticking with a score of {player_score[player]}")
-                '''
+                    if player_score[player] > 21:
+                        slow_type(f"Player {player} busts!")
+                        player_win[player] = "Bust"
+                    '''
+                    elif player_score[player] == 21 and player_win[player] != "Blackjack":
+                        slow_type(f"Player {player} is sticking with a score of {player_score[player]}")
+                    '''
+                else:
+                    slow_type(f"Player {player} has not bet this round.")
+                    
                 divide_lines()
                 std_sleep()
 
@@ -292,6 +303,8 @@ def start_game():
                     slow_type(f"Player {player} wins with Blackjack!")
                 elif player_win[player] == "Charlie":
                     slow_type(f"Player {player} wins with 5-Card Charlie!")
+                elif player_win[player] == "did_not_bet":
+                    slow_type(f"Player {player} did not bet this round.")
                 else:
                     player_win[player] = False
                     slow_type(f"Player {player} busted!")

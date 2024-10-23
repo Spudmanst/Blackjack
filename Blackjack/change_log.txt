@@ -130,3 +130,8 @@ Blackjack-Ver 2.0.1.py
 (line 183). Have set this to be the boolean value False instead to match rest of game.
 - Added more comments to help advise what each part of the code does if it is not clear just by reading.
 - Multi line comment 249 - 252 as suspect this code is not being used. Will not delete yet just in case I have missed why I typed it to begin with.
+
+----------
+Blackjack-Ver 2.1.0.py
+----------
+- Game now skips players if they did not place a bet
