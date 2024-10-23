@@ -120,3 +120,13 @@ the player accordingly.
     - Skips player turn if cannot bet.
     - Provide scoreboard when game is over (in order)
     - Allow players to name themselves
+
+----------
+Blackjack-Ver 2.0.1.py
+----------
+- Altered line asking for how much to bet to include remaining cash.
+- Altered hard coded constants (number of players, starting cash, number of rounds) to be varibles for easy edits later if needed
+- Although player_payout appears working as intended, found varible was being set as the string "False" if dealer had blackjack and player didn't 
+(line 183). Have set this to be the boolean value False instead to match rest of game.
+- Added more comments to help advise what each part of the code does if it is not clear just by reading.
+- Multi line comment 249 - 252 as suspect this code is not being used. Will not delete yet just in case I have missed why I typed it to begin with.

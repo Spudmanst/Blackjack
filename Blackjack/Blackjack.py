@@ -1,8 +1,16 @@
-# Blackjack version 2.0.0
+# Blackjack version 2.0.1
 
 import random
 import time
 import sys
+
+# Constants for game limits
+MIN_PLAYERS = 1
+MAX_PLAYERS = 7
+MIN_CASH = 10
+MAX_CASH = 10000
+MIN_ROUNDS = 1
+MAX_ROUNDS = 10
 
 # Prep to check for Aces If player "bust" and change score
 def adjust_for_aces(hand):
@@ -25,7 +33,8 @@ def create_shuffled_deck():
     deck = [f"{value} of {suit}" for suit in suits for value in values]
     random.shuffle(deck)
     return deck
-    
+
+# Help with splitting screen to make things easier to read where required
 def divide_lines():
     print("----------")
 
@@ -56,7 +65,8 @@ def player_payout(win, bet):
         return 0 
     else: # Last left is True
         return bet
-        
+
+# Provide appearance of computer typing instead of text instantly appearing        
 def slow_type(text, delay=0.02):
     for char in text:
         sys.stdout.write(char)
@@ -65,17 +75,21 @@ def slow_type(text, delay=0.02):
     # Ensure a new line at the end
     sys.stdout.write('\n')
     sys.stdout.flush()
-    
+
+# Outdated def to provide slow type without starting a new line, may remove in future.
+'''
 def slow_type_no_line(text, delay=0.02):
     for char in text:
         sys.stdout.write(char)
         sys.stdout.flush()  # Flush the output to ensure it prints immediately
         time.sleep(delay)   # Delay between each character
+'''
 
-# Minor delay functions for gameplay
+# Minor delay function for gameplay
 def std_sleep():
     time.sleep(0.95)
 
+# Longer delay function to provide "suspence"
 def sus_sleep():
     time.sleep(1.5)
 
@@ -83,34 +97,35 @@ def start_game():
     # Get number of players
     while True:
         try:
-            num_of_players = int(input("How many players would you like? Minimum 1, Maximum 7: "))
-            if 1 <= num_of_players <= 7:
+            num_of_players = int(input(f"How many players would you like? Minimum {MIN_PLAYERS}, Maximum {MAX_PLAYERS}: "))
+            if MIN_PLAYERS <= num_of_players <= MAX_PLAYERS:
                 break
             else:
-                print("Invalid input, must use a number between 1 - 7 to continue.")
+                print(f"Invalid input, must use a number between {MIN_PLAYERS} - {MAX_PLAYERS} to continue.")
         except ValueError:
-            print("Invalid input, please enter a number between 1 and 7.")
+            print(f"Invalid input, please enter a number between {MIN_PLAYERS} and {MAX_PLAYERS}.")
             
     while True:
         try:
-            starting_cash = int(input("How many money should all players start with? Minimum $10, Maximum $10000: $"))
-            if 10 <= starting_cash <= 10000:
+            starting_cash = int(input(f"How many money should all players start with? Minimum ${MIN_CASH}, Maximum ${MAX_CASH}: $"))
+            if MIN_CASH <= starting_cash <= MAX_CASH:
                 break
             else:
-                print("Invalid input, must use a whole number between 10 and 10000 to continue.")
+                print(f"Invalid input, must use a whole number between {MIN_CASH} and {MAX_CASH} to continue.")
         except ValueError:
-            print("Invalid input, please enter a whole number between 10 and 10000 (don't use commas).")
+            print(f"Invalid input, please enter a whole number between {MIN_CASH} and {MAX_CASH} (don't use commas).")
             
     while True:
         try:
-            num_of_rounds = int(input("How many rounds would you like? Minimum 1, Maximum 10: "))
-            if 1 <= num_of_rounds <= 10:
+            num_of_rounds = int(input(f"How many rounds would you like? Minimum {MIN_ROUNDS}, Maximum {MAX_ROUNDS}: "))
+            if MIN_ROUNDS <= num_of_rounds <= MAX_ROUNDS:
                 break
             else:
-                print("Invalid input, must use a number between 1 - 10 to continue.")
+                print(f"Invalid input, must use a number between {MIN_ROUNDS} - {MAX_ROUNDS} to continue.")
         except ValueError:
-            print("Invalid input, please enter a number between 1 and 10.")
+            print(f"Invalid input, please enter a number between {MIN_ROUNDS} and {MAX_ROUNDS}.")
     
+    # Create dictionary for key value pairs to assign starting cash to each player
     player_cash = {} 
     
     for player in range(1, num_of_players + 1):
@@ -125,6 +140,7 @@ def start_game():
         cards = create_shuffled_deck()
         sus_sleep()
         
+        #Create dictionary for key value pairs to assign how much each player is betting
         player_bets = {}
         
         for player in range(1, num_of_players + 1):
@@ -134,7 +150,7 @@ def start_game():
             else:
                 while True:
                     try:
-                        bet = input(f"How much is Player {player} betting? $")
+                        bet = input(f"How much is Player {player} betting (cash remaining: ${player_cash[player]})? $")
                         bet = int(bet)
                         
                         if bet > player_cash[player]:
@@ -158,11 +174,13 @@ def start_game():
         # Initialize player win status
         player_win = {player: None for player in range(1, num_of_players + 1)}
         
+        # If Dealer has Blackjack then skip normal game process as no one can beat the dealer, they can only match Blackjack to draw/push/tie.
         if dealer_score == 21:
             slow_type(f"Dealer reveals hand: {dealer_hand[0]} and {dealer_hand[1]}\nDealer has Blackjack.")
             
             any_player_has_blackjack = False
             
+            # Advise player what cards they had, if they have Blackjack then set win status to Push
             for player in range(1, num_of_players + 1):
                 slow_type(f"Player {player}'s hand: {player_hands[player][0]} and {player_hands[player][1]}")
                 
@@ -171,10 +189,11 @@ def start_game():
                     player_win[player] = "Push"
                     any_player_has_blackjack = True
                 else:
-                    player_win[player] = "False"
+                    player_win[player] = False
                     
                 std_sleep()
             
+            # If no one else has Blackjack then skip typing individual results, else advise who tied/pushed.
             if not any_player_has_blackjack:
                 slow_type("All players lose as none can match the Dealer's Blackjack.")
             else:        
@@ -190,6 +209,7 @@ def start_game():
                 slow_type(f"Dealer's hand: {dealer_hand[0]} and unknown")
                 slow_type(f"Player {player}'s hand: {player_hands[player][0]} and {player_hands[player][1]}")
                 
+                # Auto "stick" players on 21, otherwise ask what they would like to do.
                 if player_score[player] == 21:
                     slow_type("Blackjack!")
                     player_win[player] = "Blackjack"
@@ -205,9 +225,11 @@ def start_game():
                         new_card = cards.pop()
                         player_hands[player].append(new_card)
                         player_score[player] += scores[new_card.split()[0]]
+                        # If score exceeds 21 then use def to check for Aces and amend score accordingly.
                         if player_score[player] > 21:
                             player_score[player] = adjust_for_aces(player_hands[player])
                         slow_type(f"Card received: {new_card}\nNew score: {player_score[player]}")
+                        # If player has 5 Card Charlie then end turn
                         if charlie_check(player_hands[player], player_score[player]) == "Charlie":
                             player_win[player] = "Charlie"
                             slow_type(f"Player {player} has 5-Card Charlie!")
@@ -224,10 +246,10 @@ def start_game():
                 if player_score[player] > 21:
                     slow_type(f"Player {player} busts!")
                     player_win[player] = "Bust"
-                
+                '''
                 elif player_score[player] == 21 and player_win[player] != "Blackjack":
                     slow_type(f"Player {player} is sticking with a score of {player_score[player]}")
-                
+                '''
                 divide_lines()
                 std_sleep()
 
@@ -237,6 +259,7 @@ def start_game():
 
             std_sleep()
 
+            # Dealer must obtain new card until their score is above 16 (casino rules)
             while dealer_score < 17:
                 new_card = cards.pop()
                 dealer_hand.append(new_card)

@@ -9,3 +9,5 @@ Features I would like:
 - Provide scoreboard when game is over (in order)
 - Allow players to name themselves
 - Allow players to turn off betting
+- LONG TERM GOAL - Migrate to SQL database to hold player names and keep record of money long term. Need a way to add money if they run out,
+thinking "bank loan" which they can repay if they ever earn back the money.
