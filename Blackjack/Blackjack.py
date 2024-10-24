@@ -1,4 +1,4 @@
-# Blackjack version 2.1.0
+# Blackjack version 2.1.1
 
 import random
 import time
@@ -61,7 +61,7 @@ def player_payout(win, bet):
         return (bet * 1.2)
     elif win == False:
         return (-bet)
-    elif win == "Push" or "did_not_bet":
+    elif win == "Push" or win == "did_not_bet":
         return 0 
     else: # Last left is True
         return bet
@@ -85,11 +85,16 @@ def slow_type_no_line(text, delay=0.02):
         time.sleep(delay)   # Delay between each character
 '''
 
+# Both line and minor delay, indicating new phase
+def sleep_line():
+    std_sleep()
+    divide_lines()
+
 # Minor delay function for gameplay
 def std_sleep():
     time.sleep(0.95)
 
-# Longer delay function to provide "suspence"
+# Longer delay function to provide "suspense"
 def sus_sleep():
     time.sleep(1.5)
 
@@ -136,9 +141,8 @@ def start_game():
     while round_number <= num_of_rounds:
         divide_lines()
         print(f"ROUND {round_number}")
-        divide_lines() 
         cards = create_shuffled_deck()
-        sus_sleep()
+        sleep_line()
         
         #Create dictionary for key value pairs to assign how much each player is betting
         player_bets = {}
@@ -164,8 +168,7 @@ def start_game():
                     except ValueError:
                         print(f"Invalid input, please enter a number between $1 and ${player_cash[player]}.")
                         
-        divide_lines()
-        std_sleep()
+        sleep_line()
 
         # Deal cards to players
         player_hands = {player: [cards.pop() for _ in range(2)] for player in range(1, num_of_players + 1) if player_bets[player] > 0}
@@ -261,8 +264,7 @@ def start_game():
                 else:
                     slow_type(f"Player {player} has not bet this round.")
                     
-                divide_lines()
-                std_sleep()
+                sleep_line()
 
             # Dealer plays
             slow_type(f"Dealer reveals hand: {dealer_hand[0]} and {dealer_hand[1]}")
@@ -281,8 +283,7 @@ def start_game():
             if dealer_score > 21:
                 slow_type("Dealer has busted!")
                 
-            divide_lines() # Create divider when dealer has finished
-            std_sleep()
+            sleep_line() # Create divider when dealer has finished
 
             # Calculate winners
             for player in range(1, num_of_players +1):
@@ -308,6 +309,7 @@ def start_game():
                 else:
                     player_win[player] = False
                     slow_type(f"Player {player} busted!")
+                    
                 player_cash[player] += player_payout(player_win[player], player_bets[player])
             
             for player in range(1, num_of_players +1):
