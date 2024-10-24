@@ -4,12 +4,12 @@ Features I would like:
 - Multiplayer (ADDED IN 1.02)
 - Betting (ADDED IN 2.0.0)
 - Skips player turn if cannot bet (ADDED IN 2.1.0)
+- divide_lines() & std_sleep() both being used frequently, turn into their own def (ADDED IN 2.1.1)
+- Provide scoreboard when game is over (in order) (ADDED IN 2.2.0)
 - Add "help" to explain the game and special rules
-- Once Betting is available, understand more complex betting rules such as insurance and impliment
-- Provide scoreboard when game is over (in order)
+- Once Betting is available, understand more complex betting rules such as insurance and implement
 - Allow players to name themselves
 - Allow players to turn off betting
 - LONG TERM GOAL - Migrate to SQL database to hold player names and keep record of money long term. Need a way to add money if they run out,
 thinking "bank loan" which they can repay if they ever earn back the money.
 - Show winnings when game advises if player won or lost
-- divide_lines() & std_sleep() both being used frequently, turn into their own def maybe?

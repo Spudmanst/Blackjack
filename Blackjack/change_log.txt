@@ -142,3 +142,10 @@ Blackjack-Ver 2.1.1.py
 - Created def sleep_line() as many areas of coding had both std_sleep and divide_line, so new def merges the two
 - Amended fault within player_payment as elif win == "Push" or "did_not_bet" is not valid and caused winning hands to not be paid. Now corrected to
 elif win == "Push" or win == "did_not_bet" ( I swear I test things...)
+
+----------
+Blackjack-Ver 2.2.0.py
+----------
+- Created helper function to auto format player_cash when printing out.
+- Re-ordered the beginning def as not all were in alphabetical order.
+- NEW FEATURE - Print out final scores in decending order.

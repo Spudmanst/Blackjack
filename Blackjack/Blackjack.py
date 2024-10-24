@@ -1,4 +1,4 @@
-# Blackjack version 2.1.1
+# Blackjack version 2.2.0
 
 import random
 import time
@@ -37,6 +37,22 @@ def create_shuffled_deck():
 # Help with splitting screen to make things easier to read where required
 def divide_lines():
     print("----------")
+    
+# Helper Function for printing player money to specific format
+def format_cash(player_cash_value):
+    return f"{player_cash_value:.2f}"
+
+def player_payout(win, bet):
+    if win == "Blackjack":
+        return (bet * 1.5)
+    elif win == "Charlie":
+        return (bet * 1.2)
+    elif win == False:
+        return (-bet)
+    elif win == "Push" or win == "did_not_bet":
+        return 0 
+    else: # Last left is True
+        return bet
 
 scores = {
     "2": 2,
@@ -54,17 +70,10 @@ scores = {
     "Ace": 11
 }
 
-def player_payout(win, bet):
-    if win == "Blackjack":
-        return (bet * 1.5)
-    elif win == "Charlie":
-        return (bet * 1.2)
-    elif win == False:
-        return (-bet)
-    elif win == "Push" or win == "did_not_bet":
-        return 0 
-    else: # Last left is True
-        return bet
+# Both line and minor delay, indicating new phase
+def sleep_line():
+    std_sleep()
+    divide_lines()
 
 # Provide appearance of computer typing instead of text instantly appearing        
 def slow_type(text, delay=0.02):
@@ -84,11 +93,6 @@ def slow_type_no_line(text, delay=0.02):
         sys.stdout.flush()  # Flush the output to ensure it prints immediately
         time.sleep(delay)   # Delay between each character
 '''
-
-# Both line and minor delay, indicating new phase
-def sleep_line():
-    std_sleep()
-    divide_lines()
 
 # Minor delay function for gameplay
 def std_sleep():
@@ -155,18 +159,18 @@ def start_game():
             else:
                 while True:
                     try:
-                        bet = input(f"How much is Player {player} betting (cash remaining: ${player_cash[player]})? $")
+                        bet = input(f"How much is Player {player} betting (cash remaining: ${format_cash(player_cash[player])}? $")
                         bet = int(bet)
                         
                         if bet > player_cash[player]:
-                            print(f"Not enough funds, maximum available to Player {player} is ${player_cash[player]}.")
+                            print(f"Not enough funds, maximum available to Player {player} is ${format_cash(player_cash[player])}.")
                         elif bet < 1:
                             print("Must bet at least $1 or more")
                         else:
                             player_bets[player] = bet
                             break
                     except ValueError:
-                        print(f"Invalid input, please enter a number between $1 and ${player_cash[player]}.")
+                        print(f"Invalid input, please enter a number between $1 and ${format_cash(player_cash[player])}.")
                         
         sleep_line()
 
@@ -313,10 +317,23 @@ def start_game():
                 player_cash[player] += player_payout(player_win[player], player_bets[player])
             
             for player in range(1, num_of_players +1):
-                slow_type(f"Player {player} has ${player_cash[player]} remaining.")
+                slow_type(f"Player {player} has ${format_cash(player_cash[player])} remaining.")
         
         sus_sleep()        
         round_number += 1
+    
+    # When the game is over, print out scores and advise on winner
+    if round_number > num_of_rounds:
+        # Sort the players by cash in descending order
+        sorted_players = sorted(player_cash.items(), key=lambda x: x[1], reverse=True)
+
+        # Print out the sorted list
+        divide_lines()
+        slow_type("FINAL SCOREBOARD")
+        divide_lines()
+        for player, cash in sorted_players:
+            slow_type(f"Player {player}: ${cash:.2f}")
+        divide_lines()
             
 print(f"""
   ____  _            _        _            _    _
