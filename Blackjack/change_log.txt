@@ -149,3 +149,14 @@ Blackjack-Ver 2.2.0.py
 - Created helper function to auto format player_cash when printing out.
 - Re-ordered the beginning def as not all were in alphabetical order.
 - NEW FEATURE - Print out final scores in decending order.
+
+----------
+Blackjack-Ver 2.2.1.py
+----------
+- Decided previous patch number is incorrect, however will keep as it is now.
+- New Helper function to assist with printing out how much was won / lost to an acceptable format.
+- Minor tweak to format_cash, added $ so I don't need it within the formatted string it is being used in.
+- NEW FEATURE - Prints out how much was won or lose when advising if the player had won or not.
+- Added sleep_line after showing who won and how much, makes it easier to see when game is showing their current total cash.
+- Tweaked showing remaining balance so it doesn't show at the end of final round as the Final Scoreboard is going to be displayed.
+- Tweaked Calculate Winners to have specific line if player loses to Dealer's Blackjack.

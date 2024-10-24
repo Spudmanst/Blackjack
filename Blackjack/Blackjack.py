@@ -1,4 +1,4 @@
-# Blackjack version 2.2.0
+# Blackjack version 2.2.1
 
 import random
 import time
@@ -40,7 +40,7 @@ def divide_lines():
     
 # Helper Function for printing player money to specific format
 def format_cash(player_cash_value):
-    return f"{player_cash_value:.2f}"
+    return f"${player_cash_value:.2f}"
 
 def player_payout(win, bet):
     if win == "Blackjack":
@@ -53,6 +53,9 @@ def player_payout(win, bet):
         return 0 
     else: # Last left is True
         return bet
+
+def player_payout_format(amount):
+    return f"${abs(amount):.2f}"
 
 scores = {
     "2": 2,
@@ -159,18 +162,18 @@ def start_game():
             else:
                 while True:
                     try:
-                        bet = input(f"How much is Player {player} betting (cash remaining: ${format_cash(player_cash[player])}? $")
+                        bet = input(f"How much is Player {player} betting (cash remaining: {format_cash(player_cash[player])})? $")
                         bet = int(bet)
                         
                         if bet > player_cash[player]:
-                            print(f"Not enough funds, maximum available to Player {player} is ${format_cash(player_cash[player])}.")
+                            print(f"Not enough funds, maximum available to Player {player} is {format_cash(player_cash[player])}.")
                         elif bet < 1:
                             print("Must bet at least $1 or more")
                         else:
                             player_bets[player] = bet
                             break
                     except ValueError:
-                        print(f"Invalid input, please enter a number between $1 and ${format_cash(player_cash[player])}.")
+                        print(f"Invalid input, please enter a number between $1 and {format_cash(player_cash[player])}.")
                         
         sleep_line()
 
@@ -188,6 +191,7 @@ def start_game():
         # If Dealer has Blackjack then skip normal game process as no one can beat the dealer, they can only match Blackjack to draw/push/tie.
         if dealer_score == 21:
             slow_type(f"Dealer reveals hand: {dealer_hand[0]} and {dealer_hand[1]}\nDealer has Blackjack.")
+            dealer_win = "Blackjack"
             
             any_player_has_blackjack = False
             
@@ -215,7 +219,7 @@ def start_game():
                     if player_win[player] is "Push":
                         slow_type(f"Player {player} matches Blackjack. Push!")
                     else:
-                        slow_type(f"Player {player} loses as they could not match the Dealer's Blackjack.")
+                        slow_type(f"Player {player} loses as they could not match the Dealer's Blackjack. Lose {player_payout_format(player_payout(player_win[player], player_bets[player]))}")
 
         else:
             # Players have their turn
@@ -289,35 +293,39 @@ def start_game():
                 
             sleep_line() # Create divider when dealer has finished
 
-            # Calculate winners
-            for player in range(1, num_of_players +1):
-                if player_win[player] is None:
-                    if dealer_score > 21:
-                        player_win[player] = True
-                        slow_type(f"Player {player} wins as the Dealer busted!")
-                    elif player_score[player] > dealer_score and player_score[player] <= 21:
-                        player_win[player] = True
-                        slow_type(f"Player {player} wins with {player_score[player]} vs the Dealer's {dealer_score}!")
-                    elif player_score[player] == dealer_score:
-                        player_win[player] = "Push"
-                        slow_type(f"Player {player} ties with {player_score[player]}!")
-                    else:
-                        player_win[player] = False
-                        slow_type(f"Player {player} loses with {player_score[player]} vs the Dealer's {dealer_score}!")
-                elif player_win[player] == "Blackjack":
-                    slow_type(f"Player {player} wins with Blackjack!")
-                elif player_win[player] == "Charlie":
-                    slow_type(f"Player {player} wins with 5-Card Charlie!")
-                elif player_win[player] == "did_not_bet":
-                    slow_type(f"Player {player} did not bet this round.")
+        # Calculate winners
+        for player in range(1, num_of_players +1):
+            if player_win[player] is None:
+                if dealer_score > 21:
+                    player_win[player] = True
+                    slow_type(f"Player {player} wins as the Dealer busted! Win {player_payout_format(player_payout(player_win[player], player_bets[player]))}!")
+                elif player_score[player] > dealer_score and player_score[player] <= 21:
+                    player_win[player] = True
+                    slow_type(f"Player {player} wins with {player_score[player]} vs the Dealer's {dealer_score}! Win {player_payout_format(player_payout(player_win[player], player_bets[player]))}!")
+                elif player_score[player] == dealer_score:
+                    player_win[player] = "Push"
+                    slow_type(f"Player {player} ties with {player_score[player]}! No change!")
                 else:
                     player_win[player] = False
-                    slow_type(f"Player {player} busted!")
-                    
-                player_cash[player] += player_payout(player_win[player], player_bets[player])
+                    slow_type(f"Player {player} loses with {player_score[player]} vs the Dealer's {dealer_score}! Lose {player_payout_format(player_payout(player_win[player], player_bets[player]))}!")
+            elif player_win[player] == "Blackjack":
+                slow_type(f"Player {player} wins with Blackjack! Win {player_payout_format(player_payout(player_win[player], player_bets[player]))}!")
+            elif player_win[player] == "Charlie":
+                slow_type(f"Player {player} wins with 5-Card Charlie! Win {player_payout_format(player_payout(player_win[player], player_bets[player]))}!")
+            elif player_win[player] == "did_not_bet":
+                slow_type(f"Player {player} did not bet this round.")
+            elif dealer_win == "Blackjack":
+                slow_type(f"Player {player} loses to dealer's Blackjack! Lose {player_payout_format(player_payout(player_win[player], player_bets[player]))}!")
+            else:
+                player_win[player] = False
+                slow_type(f"Player {player} busted! Lose {player_payout_format(player_payout(player_win[player], player_bets[player]))}!")
             
+            sleep_line()    
+            player_cash[player] += player_payout(player_win[player], player_bets[player])
+        
+        if round_number < num_of_rounds:
             for player in range(1, num_of_players +1):
-                slow_type(f"Player {player} has ${format_cash(player_cash[player])} remaining.")
+                slow_type(f"Player {player} has {format_cash(player_cash[player])} remaining.")
         
         sus_sleep()        
         round_number += 1
@@ -328,7 +336,6 @@ def start_game():
         sorted_players = sorted(player_cash.items(), key=lambda x: x[1], reverse=True)
 
         # Print out the sorted list
-        divide_lines()
         slow_type("FINAL SCOREBOARD")
         divide_lines()
         for player, cash in sorted_players:

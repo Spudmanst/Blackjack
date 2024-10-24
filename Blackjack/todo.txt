@@ -1,4 +1,4 @@
-Features I would like:
+FEATURES ADDED:
 - Would like custom win annoucement for getting Blackjack (i.e. picture card + ace) (ADDED IN 1.01)
 - Would like 5-Card Charlie rule implimented (5 Cards under 21 is better than 21 but lower than Blackjack) (ADDED IN 1.2.0)
 - Multiplayer (ADDED IN 1.02)
@@ -6,10 +6,14 @@ Features I would like:
 - Skips player turn if cannot bet (ADDED IN 2.1.0)
 - divide_lines() & std_sleep() both being used frequently, turn into their own def (ADDED IN 2.1.1)
 - Provide scoreboard when game is over (in order) (ADDED IN 2.2.0)
+- Show winnings when game advises if player won or lost (ADDED IN 2.2.1)
+----------
+FEATURES / ITEMS TO WORK ON:
 - Add "help" to explain the game and special rules
 - Once Betting is available, understand more complex betting rules such as insurance and implement
 - Allow players to name themselves
 - Allow players to turn off betting
 - LONG TERM GOAL - Migrate to SQL database to hold player names and keep record of money long term. Need a way to add money if they run out,
 thinking "bank loan" which they can repay if they ever earn back the money.
-- Show winnings when game advises if player won or lost
+- If all players bust or not playing, then dealer can skip actions.
+- If all players have blackjack and dealer doesn't then dealer to show cards then go to payout
