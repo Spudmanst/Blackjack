@@ -160,3 +160,16 @@ Blackjack-Ver 2.2.1.py
 - Added sleep_line after showing who won and how much, makes it easier to see when game is showing their current total cash.
 - Tweaked showing remaining balance so it doesn't show at the end of final round as the Final Scoreboard is going to be displayed.
 - Tweaked Calculate Winners to have specific line if player loses to Dealer's Blackjack.
+
+----------
+Blackjack-Ver 2.3.0.py
+----------
+- Noticed error appears when you start the program however is hidden in terminal due to ASCII art pushing the error out of view. Error is: SyntaxWarning: invalid escape sequence '\|'
+The ASCII art is causing this error because the string is a formatted string. A quick search engine lookup has advised to change this to a "raw" string using the prefix r.
+The error no longer seems to appear with this change.
+- While re-working existing code to have a class called Player, noticed that the function "adjust_for_aces" is an inaccurate name as it can be used to "calculate_score"
+regardless of the scenario. Therefore have renamed to "calculate_score" and optimised further coding to utilise this.
+- NEW CLASS - Player - after reviewing the code, I have no idea why I did not create a player class from the beginning. I have amended the code to now use the player class
+as it makes things alot easier to read and work with. 
+- NEW FEATURE - Player names - players can now name themselves if they wish to.
+- Amending wording to read "please enter a whole number" if a player tries to bet a float, helps the player understand the fault better.
