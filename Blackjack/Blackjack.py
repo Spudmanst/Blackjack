@@ -1,4 +1,4 @@
-# Blackjack version 2.4.0
+# Blackjack version 2.4.1
 
 import random
 import time
@@ -13,13 +13,15 @@ MIN_ROUNDS = 1
 MAX_ROUNDS = 10
 
 class Player:
-    def __init__(self, name, number, bet = 0, cash = 0, hand = [], hand_size = 0, score = 0, win = None):
+    def __init__(self, name, number, active = True, bet = 0, cash = 0, hand = [], hand_size = 0, in_game = True, score = 0, win = None):
         self.name = name
         self.number = number
+        self.active = active
         self.bet = bet
         self.cash = cash
         self.hand = hand
         self.hand_size = hand_size
+        self.in_game = in_game
         self.score = score
         self.win = win
 
@@ -61,14 +63,19 @@ def dealer_has_blackjack(score):
 def format_cash(player_cash_value):
     return f"${player_cash_value:.2f}"
 
+def new_round(player):
+    player.win = None
+    player.bet = 0
+    player.hand = []
+
 def player_payout(win, bet):
     if win == "Blackjack":
         return (bet * 1.5)
     elif win == "Charlie":
         return (bet * 1.2)
-    elif win == False:
+    elif win == False or win == "Bust":
         return (-bet)
-    elif win == "Push" or win == "did_not_bet":
+    elif win == "Push":
         return 0 
     else: # Last left is True
         return bet
@@ -188,28 +195,14 @@ def start_game():
     round_number = 1
     
     while round_number <= num_of_rounds:
-        # Check if anyone can bet, if not then end game
-        no_one_can_bet = all(player.cash < 1 for player in players)
-        if no_one_can_bet:
-            slow_type("No players have any cash to bet with! Ending game.")
-            divide_lines()
-            break
         divide_lines()
         print(f"ROUND {round_number}")
         cards = create_shuffled_deck()
         sleep_line()
         
         for player in players:
-            # Reset hand and win status to prevent errors from preceding rounds.
-            player.bet = 0
-            player.hand = []
-            player.win = None
-            # Assign people if they cannot bet for future use.
-            if player.cash < 1:
-                player.bet = 0
-                player.win = "did_not_bet"
-                slow_type(f"Player {player.name} doesn't have enough funds to bet!")
-            else:
+            # Exclude asking players how much to bet if we already know they do not have the money.
+            if player.in_game:
                 while True:
                     try:
                         bet = slow_input(f"How much is Player {player.name} betting (cash remaining: {format_cash(player.cash)})? $")
@@ -227,9 +220,9 @@ def start_game():
                         
         sleep_line()
         
-        # Deal cards to all players and calculate scores
+        # Deal cards to all active players and calculate scores
         for player in players:
-            if player.win != "did_not_bet":
+            if player.active:
                 player.hand = [cards.pop() for _ in range(2)]
                 player.score = calculate_score(player.hand)
                 # Comment out above line if you wish to test when players having specific score
@@ -245,14 +238,14 @@ def start_game():
         dealer_has_blackjack(dealer_score)
         
         # Check if all active players have Blackjack
-        all_players_blackjack = all(player.win == "Blackjack" for player in players if player.win != "did_not_bet")
+        all_players_blackjack = all(player.win == "Blackjack" for player in players if player.active)
         
         # If Dealer has Blackjack then skip normal game process as they can only match Blackjack to draw/push/tie.
         if dealer_blackjack == True:
             slow_type(f"Dealer reveals hand: {dealer_hand[0]} and {dealer_hand[1]}\nDealer has Blackjack.")
             
             for player in players:
-                if player.win != "did_not_bet":
+                if player.active:
                     slow_type(f"Player {player.name}'s hand: {player.hand[0]} and {player.hand[1]}")
                     if player.win == "Blackjack":
                         slow_type(f"Player {player.name} has Blackjack!")
@@ -269,7 +262,7 @@ def start_game():
         # If all active players have Blackjack, then skip normal game process. We know dealer doesn't have Blackjack from "if" statement.
         elif all_players_blackjack and not dealer_blackjack:
             for player in players:
-                if player.win != "did_not_bet":
+                if player.active:
                     slow_type(f"Player {player.name}'s hand: {player.hand[0]} and {player.hand[1]}")
                     player.win = "Blackjack"
             slow_type("All participating players have Blackjack. What about the dealer?")
@@ -281,7 +274,7 @@ def start_game():
         else:
             # Players have their turn
             for player in players:
-                if player.bet != 0:
+                if player.active:
                     slow_type(f"Dealer's hand: {dealer_hand[0]} and unknown")
                     slow_type(f"Player {player.name}'s hand: {player.hand[0]} and {player.hand[1]}")
                     
@@ -318,12 +311,13 @@ def start_game():
 
                     if player.score > 21:
                         slow_type(f"Player {player.name} busts!")
+                        player.active = False
                         player.win = "Bust"
                     
                     sleep_line()
 
             # Dealer plays if not all players are out and not all players have Blackjack
-            all_players_out = all(player.win == "Bust" or player.win == "did_not_bet" for player in players)
+            all_players_out = all(not player.active for player in players)
 
             if all_players_out:
                 slow_type("All players are out.")
@@ -349,7 +343,7 @@ def start_game():
 
         # Calculate winners and winnings
         for player in players:
-            if player.win != "did_not_bet":
+            if player.in_game:
                 if player.win == "Blackjack":
                     slow_type(f"Player {player.name} wins with Blackjack! Win {player_payout_format(player_payout(player.win, player.bet))}!")
                 elif player.win == "Charlie":
@@ -359,7 +353,9 @@ def start_game():
                     slow_type(f"Player {player.name} loses to dealer's Blackjack! Lose {player_payout_format(player_payout(player.win, player.bet))}!")
                 elif player.win == "Push":
                     slow_type(f"Player {player.name} ties with Dealer's Blackjack! No Change!")
-                elif player.win is None:
+                elif player.win == "Bust":
+                    slow_type(f"Player {player.name} busted! Lose {player_payout_format(player_payout(player.win, player.bet))}!")
+                else:
                     if dealer_score > 21:
                         player.win = True
                         slow_type(f"Player {player.name} wins as the Dealer busted! Win {player_payout_format(player_payout(player.win, player.bet))}!")
@@ -372,9 +368,6 @@ def start_game():
                     else:
                         player.win = False
                         slow_type(f"Player {player.name} loses with {player.score} vs the Dealer's {dealer_score}! Lose {player_payout_format(player_payout(player.win, player.bet))}!")
-                else:
-                    player.win = False
-                    slow_type(f"Player {player.name} busted! Lose {player_payout_format(player_payout(player.win, player.bet))}!")
                
             player.cash += player_payout(player.win, player.bet)
             
@@ -382,12 +375,27 @@ def start_game():
         
         if round_number < num_of_rounds:
             for player in players:
-                slow_type(f"Player {player.name} has {format_cash(player.cash)} remaining.")
-                # Need to reset player win status before restarting
-                player.win = None
+                if player.in_game:
+                    if player.cash < 1:
+                        slow_type(f"Player {player.name} doesn't have enough funds to bet! They are removed from the game!")
+                        player.in_game = False
+                        new_round(player) # wipe to ensure no issues going forward.
+                    else:
+                        slow_type(f"Player {player.name} has {format_cash(player.cash)} remaining.")
+                        player.active = True # Change back to true in case they busted this round but still have money for next round
+                        new_round(player)
         
-        sus_sleep()        
-        round_number += 1
+        sus_sleep()
+        
+        # Check if anyone can bet, if not then end game
+        no_one_can_bet = all(player.in_game == False for player in players)
+        if no_one_can_bet:
+            divide_lines()
+            slow_type("No players have any cash to bet with! Ending game.")
+            divide_lines()
+            break
+        else:        
+            round_number += 1
     
     # When the game is over, print out scores and advise on winner
     if round_number > num_of_rounds:
@@ -395,6 +403,7 @@ def start_game():
         sorted_players = sorted(players, key=lambda player: player.cash, reverse=True)
 
         # Print out the sorted list
+        divide_lines()
         slow_type("FINAL SCOREBOARD")
         divide_lines()
         for player in sorted_players:
