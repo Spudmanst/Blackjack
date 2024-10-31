@@ -1,4 +1,4 @@
-# Blackjack version 2.3.0
+# Blackjack version 2.4.1
 
 import random
 import time
@@ -13,13 +13,15 @@ MIN_ROUNDS = 1
 MAX_ROUNDS = 10
 
 class Player:
-    def __init__(self, name, number, bet = 0, cash = 0, hand = [], hand_size = 0, score = 0, win = None):
+    def __init__(self, name, number, active = True, bet = 0, cash = 0, hand = [], hand_size = 0, in_game = True, score = 0, win = None):
         self.name = name
         self.number = number
+        self.active = active
         self.bet = bet
         self.cash = cash
         self.hand = hand
         self.hand_size = hand_size
+        self.in_game = in_game
         self.score = score
         self.win = win
 
@@ -49,18 +51,31 @@ def create_shuffled_deck():
 def divide_lines():
     print("----------")
     
+# Gobal variable used if dealer has Blackjack to skip large parts of coding. 
+def dealer_has_blackjack(score):
+    global dealer_blackjack
+    if score == 21:
+        dealer_blackjack = True
+    else:
+        dealer_blackjack = False
+    
 # Helper Function for printing player money to specific format
 def format_cash(player_cash_value):
     return f"${player_cash_value:.2f}"
+
+def new_round(player):
+    player.win = None
+    player.bet = 0
+    player.hand = []
 
 def player_payout(win, bet):
     if win == "Blackjack":
         return (bet * 1.5)
     elif win == "Charlie":
         return (bet * 1.2)
-    elif win == False:
+    elif win == False or win == "Bust":
         return (-bet)
-    elif win == "Push" or win == "did_not_bet":
+    elif win == "Push":
         return 0 
     else: # Last left is True
         return bet
@@ -86,27 +101,24 @@ scores = {
 
 # Both line and minor delay, indicating new phase
 def sleep_line():
-    std_sleep()
     divide_lines()
+    std_sleep()
+
+# Provide appearance of computer typing instead of text instantly appearing, slightly quicker 
+def slow_input(prompt, delay=0.02):
+    slow_type(prompt, delay, end='')  # No newline at the end
+    return input()  # Capture user input on the same line
 
 # Provide appearance of computer typing instead of text instantly appearing        
-def slow_type(text, delay=0.02):
+def slow_type(text, delay=0.02, end="\n"):
     for char in text:
         sys.stdout.write(char)
         sys.stdout.flush()  # Flush the output to ensure it prints immediately
         time.sleep(delay)   # Delay between each character
     # Ensure a new line at the end
-    sys.stdout.write('\n')
-    sys.stdout.flush()
-
-# Outdated def to provide slow type without starting a new line, may remove in future.
-'''
-def slow_type_no_line(text, delay=0.02):
-    for char in text:
-        sys.stdout.write(char)
-        sys.stdout.flush()  # Flush the output to ensure it prints immediately
-        time.sleep(delay)   # Delay between each character
-'''
+    if end:
+        sys.stdout.write(end)
+        sys.stdout.flush() # New line should automatically flush however we will include to ensure accurate behavior
 
 # Minor delay function for gameplay
 def std_sleep():
@@ -120,7 +132,7 @@ def start_game():
     # Get number of players
     while True:
         try:
-            num_of_players = int(input(f"How many players would you like? Minimum {MIN_PLAYERS}, Maximum {MAX_PLAYERS}: "))
+            num_of_players = int(slow_input(f"How many players would you like? Minimum {MIN_PLAYERS}, Maximum {MAX_PLAYERS}: "))
             if MIN_PLAYERS <= num_of_players <= MAX_PLAYERS:
                 break
             else:
@@ -130,7 +142,7 @@ def start_game():
     
     while True:
         try:       
-            named_players = input("Are players going to given names, Yes or No?: ").lower()
+            named_players = slow_input("Are players going to give names, Yes or No?: ").lower()
                 
             if named_players not in ("yes", "y", "no", "n"):
                     print("Invalid input, please enter 'yes' or 'no'")
@@ -142,7 +154,7 @@ def start_game():
                         
     while True:
         try:
-            starting_cash = int(input(f"How many money should all players start with? Minimum ${MIN_CASH}, Maximum ${MAX_CASH}: $"))
+            starting_cash = int(slow_input(f"How many money should all players start with? Minimum ${MIN_CASH}, Maximum ${MAX_CASH}: $"))
             if MIN_CASH <= starting_cash <= MAX_CASH:
                 break
             else:
@@ -152,7 +164,7 @@ def start_game():
             
     while True:
         try:
-            num_of_rounds = int(input(f"How many rounds would you like? Minimum {MIN_ROUNDS}, Maximum {MAX_ROUNDS}: "))
+            num_of_rounds = int(slow_input(f"How many rounds would you like? Minimum {MIN_ROUNDS}, Maximum {MAX_ROUNDS}: "))
             if MIN_ROUNDS <= num_of_rounds <= MAX_ROUNDS:
                 break
             else:
@@ -166,7 +178,7 @@ def start_game():
     for player_num in range(1, num_of_players + 1):
         while True:
             if named_players in ("yes", "y"):
-                name = input(f"Enter the name for Player {player_num}: ") 
+                name = slow_input(f"Enter the name for Player {player_num}: ") 
                 # Check for duplicate name
                 if any(name == player.name for player in players):
                     slow_type("Name already in use, please enter another name.")
@@ -189,14 +201,11 @@ def start_game():
         sleep_line()
         
         for player in players:
-            if player.cash < 1:
-                player.bet = 0
-                player.win = "did_not_bet"
-                slow_type(f"Player {player.name} doesn't have enough funds to bet!")
-            else:
+            # Exclude asking players how much to bet if we already know they do not have the money.
+            if player.in_game:
                 while True:
                     try:
-                        bet = input(f"How much is Player {player.name} betting (cash remaining: {format_cash(player.cash)})? $")
+                        bet = slow_input(f"How much is Player {player.name} betting (cash remaining: {format_cash(player.cash)})? $")
                         bet = int(bet)
                         
                         if bet > player.cash:
@@ -210,60 +219,62 @@ def start_game():
                         print(f"Invalid input, please enter a whole number between $1.00 and {format_cash(player.cash)}.")
                         
         sleep_line()
-
-        for player in players:
-            if player.bet == 0:
-                player.win = "did_not_bet"
         
-        # Deal cards
+        # Deal cards to all active players and calculate scores
         for player in players:
-            if player.win != "did_not_bet":
+            if player.active:
                 player.hand = [cards.pop() for _ in range(2)]
-        dealer_hand = [cards.pop() for _ in range(2)]
-
-        # Calculate scores
-        for player in players:
-            if player.win != "did_not_bet":
                 player.score = calculate_score(player.hand)
-        dealer_score = calculate_score(dealer_hand)
-        
-        # If Dealer has Blackjack then skip normal game process as no one can beat the dealer, they can only match Blackjack to draw/push/tie.
-        if dealer_score == 21:
-            slow_type(f"Dealer reveals hand: {dealer_hand[0]} and {dealer_hand[1]}\nDealer has Blackjack.")
-            dealer_win = "Blackjack"
-            
-            any_player_has_blackjack = False
-            
-            # Advise player what cards they had, if they have Blackjack then set win status to Push
-            for player in players:
-                # Skip player if they didn't bet
-                if player.bet == 0:
-                    continue
-                slow_type(f"Player {player.name}'s hand: {player.hand[0]} and {player.hand[1]}")
-                
+                # Comment out above line if you wish to test when players having specific score
+                # player.score = 21
                 if player.score == 21:
-                    slow_type("Blackjack!")
-                    player.win = "Push"
-                    any_player_has_blackjack = True
-                else:
-                    player.win = False
-                    
-                std_sleep()
+                    player.win = "Blackjack"
+        
+        # Deal cards to dealer and check for Blackjack            
+        dealer_hand = [cards.pop() for _ in range(2)]
+        dealer_score = calculate_score(dealer_hand)
+        # Comment out above line if you wish to test when dealer having specific score
+        # dealer_score = 21
+        dealer_has_blackjack(dealer_score)
+        
+        # Check if all active players have Blackjack
+        all_players_blackjack = all(player.win == "Blackjack" for player in players if player.active)
+        
+        # If Dealer has Blackjack then skip normal game process as they can only match Blackjack to draw/push/tie.
+        if dealer_blackjack == True:
+            slow_type(f"Dealer reveals hand: {dealer_hand[0]} and {dealer_hand[1]}\nDealer has Blackjack.")
             
-            # If no one else has Blackjack then skip typing individual results, else advise who tied/pushed.
-            if not any_player_has_blackjack:
-                slow_type("All players lose as none can match the Dealer's Blackjack.")
-            else:        
-                for player in players:
-                    if player.win == "Push":
-                        slow_type(f"Player {player.name} matches Blackjack. Push!")
+            for player in players:
+                if player.active:
+                    slow_type(f"Player {player.name}'s hand: {player.hand[0]} and {player.hand[1]}")
+                    if player.win == "Blackjack":
+                        slow_type(f"Player {player.name} has Blackjack!")
+                        player.win = "Push"
                     else:
-                        slow_type(f"Player {player.name} loses as they could not match the Dealer's Blackjack. Lose {player_payout_format(player_payout(player.win, player.bet))}")
-
+                        player.win = "Dealer_blackjack"
+            
+            if all_players_blackjack:
+                slow_type("All participating players have Blackjack!")
+                divide_lines()
+                        
+            std_sleep()      
+        
+        # If all active players have Blackjack, then skip normal game process. We know dealer doesn't have Blackjack from "if" statement.
+        elif all_players_blackjack and not dealer_blackjack:
+            for player in players:
+                if player.active:
+                    slow_type(f"Player {player.name}'s hand: {player.hand[0]} and {player.hand[1]}")
+                    player.win = "Blackjack"
+            slow_type("All participating players have Blackjack. What about the dealer?")
+            sus_sleep()
+            slow_type(f"Dealer reveals hand: {dealer_hand[0]} and {dealer_hand[1]}\nDealer could not match, all players win!")
+            sleep_line()
+       
+        # If no one has Blackjack then normal game play.    
         else:
             # Players have their turn
             for player in players:
-                if player.bet != 0:
+                if player.active:
                     slow_type(f"Dealer's hand: {dealer_hand[0]} and unknown")
                     slow_type(f"Player {player.name}'s hand: {player.hand[0]} and {player.hand[1]}")
                     
@@ -277,7 +288,7 @@ def start_game():
                         slow_type(f"Player {player.name}'s score: {player.score}")
                         
                     while player.score < 21:
-                        action = input("What would you like to do, '(H)it' or '(S)tick'? ").lower()
+                        action = slow_input("What would you like to do, '(H)it' or '(S)tick'? ").lower()
 
                         if action in ("hit", "h"):
                             new_card = cards.pop()
@@ -300,62 +311,63 @@ def start_game():
 
                     if player.score > 21:
                         slow_type(f"Player {player.name} busts!")
+                        player.active = False
                         player.win = "Bust"
-                    '''
-                    elif player_score[player] == 21 and player_win[player] != "Blackjack":
-                        slow_type(f"Player {player} is sticking with a score of {player_score[player]}")
-                    '''
-                else:
-                    slow_type(f"Player {player.name} has not bet this round.")
                     
-                sleep_line()
+                    sleep_line()
 
-            # Dealer plays
-            slow_type(f"Dealer reveals hand: {dealer_hand[0]} and {dealer_hand[1]}")
-            slow_type(f"Dealer's score = {dealer_score}")
+            # Dealer plays if not all players are out and not all players have Blackjack
+            all_players_out = all(not player.active for player in players)
 
-            std_sleep()
+            if all_players_out:
+                slow_type("All players are out.")
+            elif all_players_blackjack and dealer_blackjack == False:
+                continue
+            else:
+                slow_type(f"Dealer reveals hand: {dealer_hand[0]} and {dealer_hand[1]}")
+                slow_type(f"Dealer's score = {dealer_score}")
 
-            # Dealer must obtain new card until their score is above 16 (casino rules)
-            while dealer_score < 17:
-                new_card = cards.pop()
-                dealer_hand.append(new_card)
-                dealer_score = calculate_score(dealer_hand)
-                slow_type(f"Dealer receives: {new_card}\nDealer's new score: {dealer_score}")
-            
-            if dealer_score > 21:
-                slow_type("Dealer has busted!")
+                std_sleep()
+
+                # Dealer must obtain new card until their score is above 16 (casino rules)
+                while dealer_score < 17:
+                    new_card = cards.pop()
+                    dealer_hand.append(new_card)
+                    dealer_score = calculate_score(dealer_hand)
+                    slow_type(f"Dealer receives: {new_card}\nDealer's new score: {dealer_score}")
+                
+                if dealer_score > 21:
+                    slow_type("Dealer has busted!")
                 
             sleep_line() # Create divider when dealer has finished
 
-        # Calculate winners
+        # Calculate winners and winnings
         for player in players:
-            if player.win is None:
-                if dealer_score > 21:
-                    player.win = True
-                    slow_type(f"Player {player.name} wins as the Dealer busted! Win {player_payout_format(player_payout(player.win, player.bet))}!")
-                elif player.score > dealer_score and player.score <= 21:
-                    player.win = True
-                    slow_type(f"Player {player.name} wins with {player.score} vs the Dealer's {dealer_score}! Win {player_payout_format(player_payout(player.win, player.bet))}!")
-                elif player.score == dealer_score:
-                    player.win = "Push"
-                    slow_type(f"Player {player.name} ties with {player.score}! No change!")
+            if player.in_game:
+                if player.win == "Blackjack":
+                    slow_type(f"Player {player.name} wins with Blackjack! Win {player_payout_format(player_payout(player.win, player.bet))}!")
+                elif player.win == "Charlie":
+                    slow_type(f"Player {player.name} wins with 5-Card Charlie! Win {player_payout_format(player_payout(player.win, player.bet))}!")
+                elif player.win == "Dealer_blackjack":
+                    player.win = False # Need to change to false now to ensure it deducts money
+                    slow_type(f"Player {player.name} loses to dealer's Blackjack! Lose {player_payout_format(player_payout(player.win, player.bet))}!")
+                elif player.win == "Push":
+                    slow_type(f"Player {player.name} ties with Dealer's Blackjack! No Change!")
+                elif player.win == "Bust":
+                    slow_type(f"Player {player.name} busted! Lose {player_payout_format(player_payout(player.win, player.bet))}!")
                 else:
-                    player.win = False
-                    slow_type(f"Player {player.name} loses with {player.score} vs the Dealer's {dealer_score}! Lose {player_payout_format(player_payout(player.win, player.bet))}!")
-            elif player.win == "Blackjack":
-                slow_type(f"Player {player.name} wins with Blackjack! Win {player_payout_format(player_payout(player.win, player.bet))}!")
-            elif player.win == "Charlie":
-                slow_type(f"Player {player.name} wins with 5-Card Charlie! Win {player_payout_format(player_payout(player.win, player.bet))}!")
-            elif player.win == "did_not_bet":
-                slow_type(f"Player {player.name} did not bet this round.")
-                '''
-            elif dealer_win == "Blackjack":
-                slow_type(f"Player {player.name} loses to dealer's Blackjack! Lose {player_payout_format(player_payout(player.win, player.bet))}!")
-                '''
-            else:
-                player.win = False
-                slow_type(f"Player {player.name} busted! Lose {player_payout_format(player_payout(player.win, player.bet))}!")
+                    if dealer_score > 21:
+                        player.win = True
+                        slow_type(f"Player {player.name} wins as the Dealer busted! Win {player_payout_format(player_payout(player.win, player.bet))}!")
+                    elif player.score > dealer_score and player.score <= 21:
+                        player.win = True
+                        slow_type(f"Player {player.name} wins with {player.score} vs the Dealer's {dealer_score}! Win {player_payout_format(player_payout(player.win, player.bet))}!")
+                    elif player.score == dealer_score:
+                        player.win = "Push"
+                        slow_type(f"Player {player.name} ties with a score of {player.score}! No change!")
+                    else:
+                        player.win = False
+                        slow_type(f"Player {player.name} loses with {player.score} vs the Dealer's {dealer_score}! Lose {player_payout_format(player_payout(player.win, player.bet))}!")
                
             player.cash += player_payout(player.win, player.bet)
             
@@ -363,12 +375,27 @@ def start_game():
         
         if round_number < num_of_rounds:
             for player in players:
-                slow_type(f"Player {player.name} has {format_cash(player.cash)} remaining.")
-                # Need to reset player win status before restarting
-                player.win = None
+                if player.in_game:
+                    if player.cash < 1:
+                        slow_type(f"Player {player.name} doesn't have enough funds to bet! They are removed from the game!")
+                        player.in_game = False
+                        new_round(player) # wipe to ensure no issues going forward.
+                    else:
+                        slow_type(f"Player {player.name} has {format_cash(player.cash)} remaining.")
+                        player.active = True # Change back to true in case they busted this round but still have money for next round
+                        new_round(player)
         
-        sus_sleep()        
-        round_number += 1
+        sus_sleep()
+        
+        # Check if anyone can bet, if not then end game
+        no_one_can_bet = all(player.in_game == False for player in players)
+        if no_one_can_bet:
+            divide_lines()
+            slow_type("No players have any cash to bet with! Ending game.")
+            divide_lines()
+            break
+        else:        
+            round_number += 1
     
     # When the game is over, print out scores and advise on winner
     if round_number > num_of_rounds:
@@ -376,6 +403,7 @@ def start_game():
         sorted_players = sorted(players, key=lambda player: player.cash, reverse=True)
 
         # Print out the sorted list
+        divide_lines()
         slow_type("FINAL SCOREBOARD")
         divide_lines()
         for player in sorted_players:
@@ -395,7 +423,7 @@ while True:
     start_game()
 
     while True:
-        action = input("What would you like to do? (R)eplay, (E)xit: ").lower()
+        action = slow_input("What would you like to do? (R)eplay, (E)xit: ").lower()
 
         if action in ("replay", "r"):
             divide_lines()
