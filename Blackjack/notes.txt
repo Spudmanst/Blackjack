@@ -16,7 +16,30 @@ RULES
 - On their turn, players may choose to "Hit" (obtain another card) or "Stick" (end their turn)
 - If a player score excees 21, they are declared "Bust" and are out of the game
 - If a dealer is present, they are forced to "Stick" when their score reaches 17 or more
+- "Double" - double the bet, take a single card then stand. Can only be done on first turn.
+- "Split" - if two cards are the same, then create two hands, must place same bet again to new hand. Can only be done on first turn.
+- "Surrender" - give up half the bet to retire. Can only be done on first turn. Dealer checks for Blackjack before Surrender is an option.
 - Closest to 21 wins, ties are acceptable outcome
+
+VARIATIONS
+- 5 Card Charlie is a variation! 
+- Between one and eight packs of cards can be used. Less decks = better for player (higher chance of scoring Blackjack)
+- "Insurance" is when you can see the Dealer is starting with an Ace. If players want to insure, they pay 50% of their original bet. If the Dealer does have Blackjack
+then the player gets their original bet and their insurance money back (i.e. they win a 2:1 stake on the insurance bet). If the dealer doesn't have Blackjack then the
+insurance money is lost and you continue playing as normal.
+- "Soft 17" is when you have an Ace and 6 to start with. Casinos print either S17 or H17 on the table to show what the dealer must do in the situation of having a Soft 17.
+If H17, dealer must "hit", whereas S17 = "stand". S17 benefits the player
+- Early Surrender allows the players to surrender before the dealer checks for Blackjack
+- Resplitting - Alows you to split again if you have already "split", then got the same two value cards again in one of the hands. If playing with more than one deck
+then usually there is a rule to how many times you can resplit (usually its four).
+- No double after split (does exactly what it says) gives the house an advantage
+- "Reno rule" only allows Doubling down on permitted hard totals of 9, 10 or 11 (in Europe its only 10 or 11). Reno rule benefits the house.
+- "No hole card" mean that the Dealer doesn't reveal their Blackjack until after all players have finished. This allows for players to spend more money (splits and doubles) 
+where they will not win as the dealer could have Blackjack and the players doesn't know it.
+- Original Bets Only (OBO) is where you only forfeit your original bet if the dealer has Blackjack after playing "No hole card" ruling. "Additional" bets is when a player has 
+Doubled or split (basically any action where you place more chips on the table after receiving your first two cards)
+- Dealer wins ties.
+- Altered payouts for Blackjack: 3:2 is standard, 6:5 and 1:1 are also used. (need to consider 5 Card Charlie payout, keep as standard?)
 
 THOUGHTS TO COVERT TO CODE
 - Need to create a deck of cards.
