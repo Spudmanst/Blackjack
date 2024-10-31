@@ -197,3 +197,8 @@ I feel like it makes sense to clean at the end rather than the beginning of the 
 - Added player.in_game and player.active, these are used to help skip players, end the game early and help make the code more readable.
 - "did_not_bet" is no longer required and therefore been removed.
 
+----------
+Blackjack-Ver 2.4.2.py
+----------
+- Created modules folder and moved aspects of the game into said file. This is to help reduce the size of the main Blackjack.py as well as allow development of 
+different aspects of the game to be made within having to edit the main Blackjack.py file
