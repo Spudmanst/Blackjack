@@ -201,4 +201,10 @@ I feel like it makes sense to clean at the end rather than the beginning of the 
 Blackjack-Ver 2.4.2.py
 ----------
 - Created modules folder and moved aspects of the game into said file. This is to help reduce the size of the main Blackjack.py as well as allow development of 
-different aspects of the game to be made within having to edit the main Blackjack.py file
+different aspects of the game without having to edit the main Blackjack.py file
+
+----------
+Blackjack-Ver alpha 3.0.0.py
+----------
+- Further divided the game into seperate moduels to enable ease of editing relevant areas of the game code as well as overall readability
+- NEW FEATURE - Main menu which includes "options" and "help" (both currently WIP)
