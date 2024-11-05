@@ -1,9 +1,10 @@
 import random
 
-def create_shuffled_deck():
+def create_shuffled_deck(num_decks = 1):
     suits = ["Diamonds", "Hearts", "Spades", "Clubs"]
     values = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"]
-    deck = [f"{value} of {suit}" for suit in suits for value in values]
+    single_deck = [f"{value} of {suit}" for suit in suits for value in values]
+    deck = single_deck * num_decks
     random.shuffle(deck)
     return deck
 

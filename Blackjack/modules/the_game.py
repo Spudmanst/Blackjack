@@ -1,3 +1,4 @@
+from . import options
 from . import playing_cards
 from . import text_effect
 from . import winnings
@@ -28,6 +29,8 @@ def new_round(player):
     player.win = None
     player.bet = 0
     player.hand = []
+    
+num_of_packs = int(options.variations["num_of_packs"])
 
 def start_game(): 
     # Get number of players
@@ -94,12 +97,23 @@ def start_game():
         players.append(player)
           
     round_number = 1
+    cards = ()
     
     while round_number <= num_of_rounds:
         text_effect.divide_lines()
         print(f"ROUND {round_number}")
-        cards = playing_cards.create_shuffled_deck()
-        text_effect.sleep_line()
+        text_effect.divide_lines()
+        if len(cards) <= 26 * num_of_packs or len(cards) <= 40: # 26 is a half of 52
+            cards = playing_cards.create_shuffled_deck(num_of_packs)
+            text_effect.slow_type("***Deck has been shuffled***")
+            text_effect.divide_lines()
+        # Uncomment the below if you need to check if the creation of the deck is working correctly.    
+        """
+        for card in cards:
+            print(f"{card}", end=" | ")
+        print("\n")
+        """
+        text_effect.std_sleep()
         
         for player in players:
             # Exclude asking players how much to bet if we already know they do not have the money.
@@ -153,6 +167,7 @@ def start_game():
                         player.win = "Push"
                     else:
                         player.win = "Dealer_blackjack"
+                text_effect.divide_lines()
             
             if all_players_blackjack:
                 text_effect.slow_type("All participating players have Blackjack!")

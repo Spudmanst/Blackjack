@@ -209,3 +209,15 @@ Blackjack-Ver alpha 3.0.0pre-a.py
 - Further divided the game into seperate moduels to enable ease of editing relevant areas of the game code as well as overall readability
 - NEW FEATURE - Main menu which includes "options" and "help" (both currently WIP). Options currently have no impact on the game but will do eventually.
 - NEW FUNCTION - Text Effect - divide_and_read - Allows to easily split the screen and also allow more time to allow the player a bit of extra time to read.
+
+----------
+Blackjack-Ver alpha 3.0.0pre-b.py
+----------
+- Option to add additional decks now implimented. Changed default to 2. The system will notify players when the deck has been shuffled. If more than one 
+deck is being used then it means that the exact same card can appear more than once, e.g. 8 of clubs can appear 4 times if four decks being used. I had 
+to considered when the deck is shuffled again as we cannot be in a position where we run out of cards midway through a game. I figured it would be very easy 
+for each player to need 3 or 4 cards every turn, so we need at least 24 (3*8) to  32 (4*8) cards at any given time (7 max players + dealer = 8). I'm playing 
+safe by saying the deck needs shuffling when there are less than 40 cards. This should ensure we do not run out of cards but also allow 1 or 2 players to have 
+a round or two without the deck being shuffled (if default is changed to 1 deck of cards by the player). I have also put in that the cards are shuffled when
+less than half the deck is remaining, this should help minimise any card counters but also make it visible that the cards are being shuffled in larger games /
+longer games.

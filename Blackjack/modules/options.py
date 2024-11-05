@@ -5,7 +5,7 @@ default_variations = {
     "blackjack_payout" : 1.5,
     "5_card_charlie" : False,
     "charlie_payout" : 1,
-    "num_of_packs" : 1,
+    "num_of_packs" : 2,
     "insurance" : False,
     "s17" : True,
     "resplitting" : False,
@@ -18,7 +18,7 @@ variations = {
     "blackjack_payout" : 1.5,
     "5_card_charlie" : False,
     "charlie_payout" : 1,
-    "num_of_packs" : 1,
+    "num_of_packs" : 2,
     "insurance" : False,
     "s17" : True,
     "resplitting" : False,
@@ -247,8 +247,7 @@ def main():
                     text_effect.slow_type("Unknown command, please type a number corresponding to the action you wish to take.")
             
         elif action in "3":
+            text_effect.divide_lines()
             menus.main_menu()
         else:
             text_effect.slow_type("Unknown command, please type a number corresponding to the action you wish to take.")
-        text_effect.divide_lines()
-        menus.main_menu()
