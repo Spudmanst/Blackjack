@@ -204,7 +204,8 @@ Blackjack-Ver 2.4.2.py
 different aspects of the game without having to edit the main Blackjack.py file
 
 ----------
-Blackjack-Ver alpha 3.0.0.py
+Blackjack-Ver alpha 3.0.0pre-a.py
 ----------
 - Further divided the game into seperate moduels to enable ease of editing relevant areas of the game code as well as overall readability
-- NEW FEATURE - Main menu which includes "options" and "help" (both currently WIP)
+- NEW FEATURE - Main menu which includes "options" and "help" (both currently WIP). Options currently have no impact on the game but will do eventually.
+- NEW FUNCTION - Text Effect - divide_and_read - Allows to easily split the screen and also allow more time to allow the player a bit of extra time to read.

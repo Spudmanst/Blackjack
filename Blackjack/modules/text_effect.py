@@ -1,6 +1,11 @@
 import time
 import sys
 
+# Provides a divider and time to read if a lot of text
+def divide_and_read():
+    divide_lines()
+    time.sleep(2)
+
 # Help with splitting screen to make things easier to read where required
 def divide_lines():
     print("----------")
@@ -39,4 +44,4 @@ def std_sleep():
 
 # Longer delay function to provide "suspense"
 def sus_sleep():
-    time.sleep(1.5)
+    time.sleep(1.5)    
