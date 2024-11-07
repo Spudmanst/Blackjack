@@ -33,6 +33,7 @@ def new_round(player):
 def start_game(): 
     
     num_of_packs = int(options.variations["num_of_packs"]) # Grab num of packs now as it cannot be change again until game over.
+    charlie_active = options.variations["5_card_charlie"]
     
     # Get number of players
     while True:
@@ -109,11 +110,11 @@ def start_game():
             text_effect.slow_type("***Deck has been shuffled***")
             text_effect.divide_lines()
         # Uncomment the below if you need to check if the creation of the deck is working correctly.    
-        
+        """
         for card in cards:
             print(f"{card}", end=" | ")
         print("\n")
-        
+        """
         text_effect.std_sleep()
         
         for player in players:
@@ -209,14 +210,17 @@ def start_game():
 
                         if action in ("hit", "h"):
                             new_card = cards.pop()
+                            # Comment above line and uncomment below line if testing for 5 card charlie
+                            # new_card = "Ace of Tests"
                             player.hand.append(new_card)
                             player.score = winnings.calculate_score(player.hand)
                             text_effect.slow_type(f"Card received: {new_card}\nNew score: {player.score}")
                             # If player has 5 Card Charlie then end turn
-                            if winnings.charlie_check(player.hand, player.score) == "Charlie":
-                                player.win = "Charlie"
-                                text_effect.slow_type(f"Player {player.name} has 5-Card Charlie!")
-                                break
+                            if charlie_active == True:
+                                if winnings.charlie_check(player.hand, player.score) == "Charlie":
+                                    player.win = "Charlie"
+                                    text_effect.slow_type(f"Player {player.name} has 5-Card Charlie!")
+                                    break
                         elif action in ("stand", "s"):
                             text_effect.slow_type(f"Player {player.name} is stands with a score of {player.score}")
                             break

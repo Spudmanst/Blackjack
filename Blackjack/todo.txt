@@ -2,7 +2,6 @@ FEATURES / ITEMS TO WORK ON:
 - Add "help" to explain the game and special rules (WIP)
 - Once Betting is available, understand more complex betting rules such as insurance and implement
 - Allow players to turn off betting
-*** - Gobal variable to calculate half the total deck will not update if the player plays a round, then backs out to the options, changes the number, then goes to play again. ***
 - LONG TERM GOAL - Migrate to SQL database to hold player names and keep record of money long term. Need a way to add money if they run out,
 thinking "bank loan" which they can repay if they ever earn back the money.
 ----------

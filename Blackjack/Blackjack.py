@@ -1,4 +1,4 @@
-# Blackjack version alpha 3.0.0pre-c
+# Blackjack version alpha 3.0.0pre-d
 
 from modules import menus
 

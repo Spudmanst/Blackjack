@@ -230,3 +230,10 @@ then goes back into a game. This variable is now places within the def start_gam
 through a game but will also check if a new game starts since settings can be changed between games.
 - removed text_effect.divide_line from option 3 when asked if you would like to view current settings or change them. Option 3 returns to main menu and created 
 a line break however the main menu already does this, therefore safe to remove from option 3.
+
+----------
+Blackjack-Ver alpha 3.0.0pre-d.py
+----------
+- Forgot to comment out list of cards again from previous testing, now complete.
+- Altering the payout for Blackjack and 5 Card Charlie now implimented and working.
+- Being able to turn on and off 5 Card Charlie now implimented and working.

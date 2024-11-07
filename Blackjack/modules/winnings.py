@@ -1,3 +1,4 @@
+from . import options
 from . import playing_cards
 from . import text_effect
 
@@ -25,10 +26,12 @@ def dealer_has_blackjack(score):
         dealer_blackjack = False
         
 def player_payout(win, bet):
+    blackjack_multiplier = float(options.variations["blackjack_payout"])
+    charlie_multiplier = float(options.variations["charlie_payout"])
     if win == "Blackjack":
-        return (bet * 1.5)
+        return (bet * blackjack_multiplier)
     elif win == "Charlie":
-        return (bet * 1.2)
+        return (bet * charlie_multiplier)
     elif win == False or win == "Bust":
         return (-bet)
     elif win == "Push":
