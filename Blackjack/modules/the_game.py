@@ -29,10 +29,11 @@ def new_round(player):
     player.win = None
     player.bet = 0
     player.hand = []
-    
-num_of_packs = int(options.variations["num_of_packs"])
 
 def start_game(): 
+    
+    num_of_packs = int(options.variations["num_of_packs"]) # Grab num of packs now as it cannot be change again until game over.
+    
     # Get number of players
     while True:
         try:
@@ -108,11 +109,11 @@ def start_game():
             text_effect.slow_type("***Deck has been shuffled***")
             text_effect.divide_lines()
         # Uncomment the below if you need to check if the creation of the deck is working correctly.    
-        """
+        
         for card in cards:
             print(f"{card}", end=" | ")
         print("\n")
-        """
+        
         text_effect.std_sleep()
         
         for player in players:

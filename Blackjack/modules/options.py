@@ -130,7 +130,7 @@ def main():
                 elif action in "4":
                     text_effect.slow_type(
                         "This is how many deck of cards are used to generate the full pile the dealer pulls from. "
-                        "Default is 1."
+                        "Default is 2."
                     )
                     while True:
                         action = text_effect.slow_input("How many decks would you like to use between 1 and 8: ")
@@ -247,7 +247,6 @@ def main():
                     text_effect.slow_type("Unknown command, please type a number corresponding to the action you wish to take.")
             
         elif action in "3":
-            text_effect.divide_lines()
             menus.main_menu()
         else:
             text_effect.slow_type("Unknown command, please type a number corresponding to the action you wish to take.")

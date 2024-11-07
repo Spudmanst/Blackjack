@@ -221,3 +221,12 @@ safe by saying the deck needs shuffling when there are less than 40 cards. This 
 a round or two without the deck being shuffled (if default is changed to 1 deck of cards by the player). I have also put in that the cards are shuffled when
 less than half the deck is remaining, this should help minimise any card counters but also make it visible that the cards are being shuffled in larger games /
 longer games.
+
+----------
+Blackjack-Ver alpha 3.0.0pre-c.py
+----------
+- num_of_packs within the_game.py was a gobal variable that I believe is not updating if someone plays a game, then goes back to menu, changes the num of packs,
+then goes back into a game. This variable is now places within the def start_game() as to ensure it checks this value at the point where it cannot be changed midway
+through a game but will also check if a new game starts since settings can be changed between games.
+- removed text_effect.divide_line from option 3 when asked if you would like to view current settings or change them. Option 3 returns to main menu and created 
+a line break however the main menu already does this, therefore safe to remove from option 3.
