@@ -109,12 +109,12 @@ an inner loop which needs to be broken out of or sys.exit().
 Blackjack-Ver 1.2.0.py
 ----------
 - Previous update checked with Dealer Blackjack earlier on, so have removed the same check later (lines 188 - 190)
-- Implimented 5-Card Charlie rule, tested and appears to work as intended.
+- Implemented 5-Card Charlie rule, tested and appears to work as intended.
 
 ----------
 Blackjack-Ver 2.0.0.py
 ----------
-- Betting has been implimented, tested and appears functional. Betting takes into consideration the type of win and credits
+- Betting has been implemented, tested and appears functional. Betting takes into consideration the type of win and credits
 the player accordingly.
 - ADDED on "todo" 
     - Skips player turn if cannot bet.
@@ -213,7 +213,7 @@ Blackjack-Ver alpha 3.0.0pre-a.py
 ----------
 Blackjack-Ver alpha 3.0.0pre-b.py
 ----------
-- Option to add additional decks now implimented. Changed default to 2. The system will notify players when the deck has been shuffled. If more than one 
+- Option to add additional decks now implemented. Changed default to 2. The system will notify players when the deck has been shuffled. If more than one 
 deck is being used then it means that the exact same card can appear more than once, e.g. 8 of clubs can appear 4 times if four decks being used. I had 
 to considered when the deck is shuffled again as we cannot be in a position where we run out of cards midway through a game. I figured it would be very easy 
 for each player to need 3 or 4 cards every turn, so we need at least 24 (3*8) to  32 (4*8) cards at any given time (7 max players + dealer = 8). I'm playing 
@@ -235,13 +235,13 @@ a line break however the main menu already does this, therefore safe to remove f
 Blackjack-Ver alpha 3.0.0pre-d.py
 ----------
 - Forgot to comment out list of cards again from previous testing, now complete.
-- Altering the payout for Blackjack and 5 Card Charlie now implimented and working.
-- Being able to turn on and off 5 Card Charlie now implimented and working.
+- Altering the payout for Blackjack and 5 Card Charlie now implemented and working.
+- Being able to turn on and off 5 Card Charlie now implemented and working.
 
 ----------
 Blackjack-Ver alpha 3.0.0pre-e.py
 ----------
-- Implimented "insurance" which required many edit to code:
+- Implemented "insurance" which required many edit to code:
     - self.insure added to Player class
     - ins_active now checks at start_game()
     - player cash is altered at beginning once player.bet has been assigned (we need to deduct cash now before a check later to see if player can afford insurance)
@@ -251,3 +251,17 @@ Blackjack-Ver alpha 3.0.0pre-e.py
     back th original bet if the player wins or pushes.
     - Have to add in check for dealer_blackjack later on just before dealer's turn if ins_active == True
 - Made change to all_players_blackjack as text didn't make sense if only one player.
+
+----------
+Blackjack-Ver alpha 3.0.0pre-f.py
+----------
+- Implemented "s17" rule variation
+- Removed double entry code and re-arranged when we calculate if all active players have blackjack. Unsure why I had it calculate if a player had blackjack twice
+as well as calculate if all active players had blackjack outside of the loop that would use it, seems to be computing a variable for no reason otherwise!
+- Code edited to try and make more readable
+- Deleted unrequired comments where it was obvious what was happening, as well as add comments to help explain more complex aspects.
+- Apparently I never tested the insurance as I've found multiple issues:
+    - Doesn't give back money if player wins on insurance
+    - Asks the player mutliple times if they wish to ensure (once after each card they receive)
+    - Awarded too much "winnings" when player won the insurance bet.
+I believe I have fixed them now!

@@ -36,31 +36,45 @@ def player_payout(win, bet):
         return (-bet)
     elif win == "Push":
         return 0 
+    elif win == "Insure":
+        return (bet * 0.5) # This returns the insurance cost
     else: # Last left is True
         return bet
     
 def winner(dealer_score, player):
     if player.win == "Blackjack":
         return text_effect.slow_type(f"Player {player.name} wins with Blackjack! Win {text_effect.player_payout_format(player_payout(player.win, player.bet))}!")
+    
     elif player.win == "Charlie":
         return text_effect.slow_type(f"Player {player.name} wins with 5-Card Charlie! Win {text_effect.player_payout_format(player_payout(player.win, player.bet))}!")
-    elif player.win == "Dealer_blackjack":
+    
+    elif player.win == "Dealer_blackjack" and player.insure == False:
         player.win = False # Need to change to false now to ensure it deducts money
         return text_effect.slow_type(f"Player {player.name} loses to dealer's Blackjack! Lose {text_effect.player_payout_format(player_payout(player.win, player.bet))}!")
+        
+    elif player.win == "Dealer_blackjack" and player.insure == True:
+        player.win = "Insure" # Need to ensure they recover their bet and insurance money
+        return text_effect.slow_type(f"Player {player.name} loses to dealer's Blackjack but recover their bet and insurance of {text_effect.player_payout_format(player_payout(player.win, player.bet))}!")
+        
     elif player.win == "Push":
         return text_effect.slow_type(f"Player {player.name} ties with Dealer's Blackjack! No Change!")
+    
     elif player.win == "Bust":
         return text_effect.slow_type(f"Player {player.name} busted! Lose {text_effect.player_payout_format(player_payout(player.win, player.bet))}!")
+    
     else:
         if dealer_score > 21:
             player.win = True
             return text_effect.slow_type(f"Player {player.name} wins as the Dealer busted! Win {text_effect.player_payout_format(player_payout(player.win, player.bet))}!")
+        
         elif player.score > dealer_score and player.score <= 21:
             player.win = True
             return text_effect.slow_type(f"Player {player.name} wins with {player.score} vs the Dealer's {dealer_score}! Win {text_effect.player_payout_format(player_payout(player.win, player.bet))}!")
+        
         elif player.score == dealer_score:
             player.win = "Push"
             return text_effect.slow_type(f"Player {player.name} ties with a score of {player.score}! No change!")
+        
         else:
             player.win = False
             return text_effect.slow_type(f"Player {player.name} loses with {player.score} vs the Dealer's {dealer_score}! Lose {text_effect.player_payout_format(player_payout(player.win, player.bet))}!")

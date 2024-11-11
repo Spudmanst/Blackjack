@@ -33,14 +33,22 @@ def new_round(player):
 
 def start_game(): 
     
-    num_of_packs = int(options.variations["num_of_packs"]) # Grab num of packs now as it cannot be change again until game over.
+    """
+    Bring in required settings from options. Create variables to ensure we don't
+    keep asking the computer to calculate these each time we wish to use them.
+    Also grabbing the variables now when the game has started ensures we have the 
+    most up to date settings incase the user changes them.
+    """
+    num_of_packs = int(options.variations["num_of_packs"])
     charlie_active = options.variations["5_card_charlie"]
     ins_active = options.variations["insurance"]
+    s17_rule = options.variations["s17"]
     
-    # Get number of players
     while True:
         try:
-            num_of_players = int(text_effect.slow_input(f"How many players would you like? Minimum {MIN_PLAYERS}, Maximum {MAX_PLAYERS}: "))
+            num_of_players = int(text_effect.slow_input(
+                f"How many players would you like? Minimum {MIN_PLAYERS}, Maximum {MAX_PLAYERS}: "
+                ))
             if MIN_PLAYERS <= num_of_players <= MAX_PLAYERS:
                 break
             else:
@@ -62,7 +70,9 @@ def start_game():
                         
     while True:
         try:
-            starting_cash = int(text_effect.slow_input(f"How many money should all players start with? Minimum ${MIN_CASH}, Maximum ${MAX_CASH}: $"))
+            starting_cash = int(text_effect.slow_input(
+                f"How many money should all players start with? Minimum ${MIN_CASH}, Maximum ${MAX_CASH}: $"
+                ))
             if MIN_CASH <= starting_cash <= MAX_CASH:
                 break
             else:
@@ -72,7 +82,9 @@ def start_game():
             
     while True:
         try:
-            num_of_rounds = int(text_effect.slow_input(f"How many rounds would you like? Minimum {MIN_ROUNDS}, Maximum {MAX_ROUNDS}: "))
+            num_of_rounds = int(text_effect.slow_input(
+                f"How many rounds would you like? Minimum {MIN_ROUNDS}, Maximum {MAX_ROUNDS}: "
+                ))
             if MIN_ROUNDS <= num_of_rounds <= MAX_ROUNDS:
                 break
             else:
@@ -84,7 +96,7 @@ def start_game():
     players = []
     
     for player_num in range(1, num_of_players + 1):
-        while True:
+        while True: # While loop allows us to constantly ask for name if duplicate with another.
             if named_players in ("yes", "y"):
                 name = text_effect.slow_input(f"Enter the name for Player {player_num}: ") 
                 # Check for duplicate name
@@ -93,6 +105,7 @@ def start_game():
                 else:
                     break # Exit loop if name not duplicate
             else:
+                # Default name is the player number set as a string.
                 name = str(player_num)
                 break # Need to break loop if we are not using names as using while True to loop until all names are unique.
             
@@ -124,7 +137,9 @@ def start_game():
             if player.in_game:
                 while True:
                     try:
-                        bet = text_effect.slow_input(f"How much is Player {player.name} betting (cash remaining: {text_effect.format_cash(player.cash)})? $")
+                        bet = text_effect.slow_input(
+                            f"How much is Player {player.name} betting (cash remaining: {text_effect.format_cash(player.cash)})? $"
+                            )
                         bet = int(bet)
                         
                         if bet > player.cash:
@@ -150,16 +165,18 @@ def start_game():
                 if player.score == 21:
                     player.win = "Blackjack"
         
+        # Used in multiple loops later on
+        all_players_blackjack = all(player.win == "Blackjack" for player in players if player.active)
+        
         # Deal cards to dealer and check for Blackjack            
         dealer_hand = [cards.pop() for _ in range(2)]
+        # Comment above line out and use the below if you manually wish to test cards
+        # dealer_hand = ["Ace of Tests", cards.pop()]
         dealer_score = winnings.calculate_score(dealer_hand)
-        dealer_upcard = dealer_hand[0].split()[0] # used later to allow insurance if allowed.
         # Comment out above line if you wish to test when dealer having specific score
         # dealer_score = 21
+        dealer_upcard = dealer_hand[0].split()[0] # used later to allow insurance if allowed.
         winnings.dealer_has_blackjack(dealer_score)
-        
-        # Check if all active players have Blackjack
-        all_players_blackjack = all(player.win == "Blackjack" for player in players if player.active)
         
         # if we don't have insurance, then we can speed up the game
         if ins_active == False:
@@ -194,7 +211,9 @@ def start_game():
                 else:
                     text_effect.slow_type(f"Player {player.name} has Blackjack. What about the dealer?")
                 text_effect.sus_sleep()
-                text_effect.slow_type(f"Dealer reveals hand: {dealer_hand[0]} and {dealer_hand[1]}\nDealer could not match, all players win!")
+                text_effect.slow_type(
+                    f"Dealer reveals hand: {dealer_hand[0]} and {dealer_hand[1]}\nDealer could not match, all players win!"
+                    )
                 text_effect.sleep_line()
         
         # If no one has Blackjack then normal game play (also starting point for if insurance needs to be considered)    
@@ -209,18 +228,16 @@ def start_game():
                     if player.score == 21:
                         text_effect.slow_type("Blackjack!")
                         player.win = "Blackjack"
-                        text_effect.divide_lines()
-                        continue # End current player's turn
                     else: 
                         text_effect.slow_type(f"Player {player.name}'s score: {player.score}")
-                        
-                    while player.score < 21:
                         if ins_active and dealer_upcard == "Ace":
                             insure_cost = float(player.bet / 2)
                             if insure_cost < player.cash:
                                 try:
                                     while True:
-                                        action = text_effect.slow_input(f"Dealer's upcard is an ace, pay {text_effect.format_cash(insure_cost)} to insure? (Y)es or (N)o: ").lower()
+                                        action = text_effect.slow_input(
+                                            f"Dealer's upcard is an ace, pay {text_effect.format_cash(insure_cost)} to insure? (Y)es or (N)o: "
+                                            ).lower()
                                         if action in ("yes", "y"):
                                             player.insure = True
                                             player.cash -= insure_cost
@@ -233,70 +250,80 @@ def start_game():
                                 except Exception as e:
                                     print(f"An error occurred: {e}")
                             else:
-                                text_effect.slow_input(f"Dealer's upcard is an ace, however you do not have enough funds to insure.")
-                                insure = False
+                                text_effect.slow_type(f"Dealer's upcard is an ace, however you do not have enough funds to insure.")
+                                player.insure = False
                             
-                            
-                        action = text_effect.slow_input("What would you like to do, '(H)it' or '(S)tand'? ").lower()
+                        while player.score < 21:
+                            action = text_effect.slow_input("What would you like to do, '(H)it' or '(S)tand'? ").lower()
 
-                        if action in ("hit", "h"):
-                            new_card = cards.pop()
-                            # Comment above line and uncomment below line if testing for 5 card charlie
-                            # new_card = "Ace of Tests"
-                            player.hand.append(new_card)
-                            player.score = winnings.calculate_score(player.hand)
-                            text_effect.slow_type(f"Card received: {new_card}\nNew score: {player.score}")
-                            # If player has 5 Card Charlie then end turn
-                            if charlie_active == True:
-                                if winnings.charlie_check(player.hand, player.score) == "Charlie":
-                                    player.win = "Charlie"
-                                    text_effect.slow_type(f"Player {player.name} has 5-Card Charlie!")
-                                    break
-                        elif action in ("stand", "s"):
-                            text_effect.slow_type(f"Player {player.name} is stands with a score of {player.score}")
-                            break
-                        elif action in ("exit", "e"):
-                            print("Exiting game.")
-                            exit()
-                        else:
-                            print(f"Unknown command, type 'hit' or 'stand' to continue.\nType 'exit' to finish playing")
+                            if action in ("hit", "h"):
+                                new_card = cards.pop()
+                                # Comment above line and uncomment below line if testing for 5 card charlie
+                                # new_card = "Ace of Tests"
+                                player.hand.append(new_card)
+                                player.score = winnings.calculate_score(player.hand)
+                                text_effect.slow_type(f"Card received: {new_card}\nNew score: {player.score}")
+                                # If player has 5 Card Charlie then end turn
+                                if charlie_active == True:
+                                    if winnings.charlie_check(player.hand, player.score) == "Charlie":
+                                        player.win = "Charlie"
+                                        text_effect.slow_type(f"Player {player.name} has 5-Card Charlie!")
+                                        break
+                            elif action in ("stand", "s"):
+                                text_effect.slow_type(f"Player {player.name} is stands with a score of {player.score}")
+                                break
+                            elif action in ("exit", "e"):
+                                print("Exiting game.")
+                                exit()
+                            else:
+                                print(f"Unknown command, type 'hit' or 'stand' to continue.\nType 'exit' to finish playing")
 
-                    if player.score > 21:
-                        text_effect.slow_type(f"Player {player.name} busts!")
-                        player.active = False
-                        player.win = "Bust"
+                        if player.score > 21:
+                            text_effect.slow_type(f"Player {player.name} busts!")
+                            player.active = False
+                            player.win = "Bust"
                     
-                    text_effect.sleep_line()
+                text_effect.sleep_line()
 
             # Dealer plays if not all players are out and not all players have Blackjack
             all_players_out = all(not player.active for player in players)
 
             if all_players_out:
                 text_effect.slow_type("All players are out.")
-            elif all_players_blackjack and winnings.dealer_blackjack == False:
+            elif not ins_active and all_players_blackjack and winnings.dealer_blackjack == False:
                 continue
             else:
                 text_effect.slow_type(f"Dealer reveals hand: {dealer_hand[0]} and {dealer_hand[1]}")
+                # We only now advise if dealer has blackjack if insurance is active
                 if ins_active and winnings.dealer_blackjack == True:
                     text_effect.slow_type("Dealer has Blackjack")
+                    for player in players:
+                        if player.active:
+                            if player.win != "Blackjack":
+                                player.win = "Dealer_blackjack"
+                            else:
+                                player.win = "Push"
                 else:
-                    text_effect.slow_type(f"Dealer's score = {dealer_score}")
-                    
-                    if ins_active:
-                        text_effect.slow_type("Any insurance bets are now lost.")
+                    if all_players_blackjack:
+                        text_effect.slow_type("All active players have Blackjack, Dealer cannot match.")
+                    else:
+                        text_effect.slow_type(f"Dealer's score = {dealer_score}")
+                        
+                        if ins_active and any(player.insure == True for player in players if player.active):
+                            text_effect.slow_type("Any insurance bets are now lost.")
 
-                    text_effect.std_sleep()
+                        text_effect.std_sleep()                            
 
-                    # Dealer must obtain new card until their score is above 16 (casino rules)
-                    while dealer_score < 17:
-                        new_card = cards.pop()
-                        dealer_hand.append(new_card)
-                        dealer_score = winnings.calculate_score(dealer_hand)
-                        text_effect.slow_type(f"Dealer receives: {new_card}\nDealer's new score: {dealer_score}")
+                        # Dealer must obtain new card until their score is above 16 (casino rules)
+                        while dealer_score < 17 or (dealer_score == 17 and len(dealer_hand) == 2 and not s17_rule):
+                            new_card = cards.pop()
+                            dealer_hand.append(new_card)
+                            dealer_score = winnings.calculate_score(dealer_hand)
+                            text_effect.slow_type(f"Dealer receives: {new_card}\nDealer's new score: {dealer_score}")
+                        
+                        if dealer_score > 21:
+                            text_effect.slow_type("Dealer has busted!")
                     
-                    if dealer_score > 21:
-                        text_effect.slow_type("Dealer has busted!")
-                
             text_effect.sleep_line() # Create divider when dealer has finished
 
         # Inform results and winnings / losses
@@ -306,6 +333,9 @@ def start_game():
                 win = winnings.player_payout(player.win, player.bet)
                 if win >= 0:
                     player.cash += win + player.bet # must remember to give back their bet if they won
+                    """we give back bet here and not within winnings.player_payout as the player_payout
+                    def is used elsewhere to display how much they won which does not include the bet
+                    itself.""" 
             
         text_effect.sleep_line() 
         
@@ -313,11 +343,15 @@ def start_game():
             for player in players:
                 if player.in_game:
                     if player.cash < 1:
-                        text_effect.slow_type(f"Player {player.name} doesn't have enough funds to bet! They are removed from the game!")
+                        text_effect.slow_type(
+                            f"Player {player.name} doesn't have enough funds to bet! They are removed from the game!"
+                            )
                         player.in_game = False
                         new_round(player) # wipe to ensure no issues going forward.
                     else:
-                        text_effect.slow_type(f"Player {player.name} has {text_effect.format_cash(player.cash)} remaining.")
+                        text_effect.slow_type(
+                            f"Player {player.name} has {text_effect.format_cash(player.cash)} remaining."
+                            )
                         player.active = True # Change back to true in case they busted this round but still have money for next round
                         new_round(player)
         
