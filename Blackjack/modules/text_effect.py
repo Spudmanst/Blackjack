@@ -11,8 +11,8 @@ def divide_lines():
     print("----------")
 
 # Helper Function for printing player money to specific format
-def format_cash(player_cash_value):
-    return f"${player_cash_value:.2f}"
+def format_cash(cash_value):
+    return f"${cash_value:.2f}"
 
 def player_payout_format(amount):
     return f"${abs(amount):.2f}"

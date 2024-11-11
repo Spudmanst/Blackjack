@@ -237,3 +237,17 @@ Blackjack-Ver alpha 3.0.0pre-d.py
 - Forgot to comment out list of cards again from previous testing, now complete.
 - Altering the payout for Blackjack and 5 Card Charlie now implimented and working.
 - Being able to turn on and off 5 Card Charlie now implimented and working.
+
+----------
+Blackjack-Ver alpha 3.0.0pre-e.py
+----------
+- Implimented "insurance" which required many edit to code:
+    - self.insure added to Player class
+    - ins_active now checks at start_game()
+    - player cash is altered at beginning once player.bet has been assigned (we need to deduct cash now before a check later to see if player can afford insurance)
+    - dealer_upcard added, insurance only available if the upcard is an Ace
+    - Previously added coding to speed up the game if dealer has blackjack can now be bypassed if ins_active == True
+    - Alteration to how play obtain their winnings as previous code did not deduct the bet until the end of game, we cannot do this anymore so the code needs to add
+    back th original bet if the player wins or pushes.
+    - Have to add in check for dealer_blackjack later on just before dealer's turn if ins_active == True
+- Made change to all_players_blackjack as text didn't make sense if only one player.
