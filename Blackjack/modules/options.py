@@ -8,9 +8,6 @@ default_variations = {
     "num_of_packs" : 2,
     "insurance" : False,
     "s17" : True,
-    "resplitting" : False,
-    "double_after_split" : False,
-    "reno_rule" : False,
     "dealer_wins_ties" : False
 }
 
@@ -21,8 +18,6 @@ variations = {
     "num_of_packs" : 2,
     "insurance" : False,
     "s17" : True,
-    "resplitting" : False,
-    "double_after_split" : False,
     "dealer_wins_ties" : False
 }
 
@@ -60,9 +55,7 @@ def main():
                     "4) Number of packs\n"
                     "5) Insurance\n"
                     "6) S17 or H17\n"
-                    "7) Resplitting\n"
-                    "8) Double allowed after splitting\n"
-                    "9) Dealer wins ties\n"
+                    "7) Dealer wins ties\n"
                     "You can respond with 'default' if you wish to go back to the orignal settings.\n"
                     "Alternatively you can type 'exit' to leave this menu.\n" 
                     "Input: "
@@ -185,44 +178,6 @@ def main():
                     text_effect.divide_and_read()
                         
                 elif action in "7":
-                    text_effect.slow_type(
-                        "Resplitting allows the player to split again if after splitting, "
-                        "the first two cards in a hand are the same again. Default is off."
-                    )
-                    while True:
-                        action = text_effect.slow_input("Would you like to allow resplitting? Yes or No: ").lower()
-                        if action in ("yes", "y"):
-                            variations["resplitting"] = True
-                            break
-                        elif action in ("no", "n"):
-                            variations["resplitting"] = False
-                            break
-                        else:
-                            text_effect.slow_type("Unknown command, please type Yes or No.")
-                    
-                    text_effect.slow_type(f"Setting for 'Is replitting allowed?' is set to {variations['resplitting']}.")
-                    text_effect.divide_and_read()
-                        
-                elif action in "8":
-                    text_effect.slow_type(
-                        "'Double after split' is where a player is allowed to 'double' after splitting. "
-                        "Default is off."
-                    )
-                    while True:
-                        action = text_effect.slow_input("Would you like to allow double after splitting? Yes or No: ")
-                        if action in ("yes", "y"):
-                            variations["double_after_split"] = True
-                            break
-                        elif action in ("no", "n"):
-                            variations["double_after_split"] = False
-                            break
-                        else:
-                            text_effect.slow_type("Unknown command, please type Yes or No.")
-                    
-                    text_effect.slow_type(f"Setting for 'Can double after splitting?' is set to {variations["double_after_split"]}.")
-                    text_effect.divide_and_read()
-                        
-                elif action in "9":
                     text_effect.slow_type("'Dealer wins ties' does exactly as it states. Default is off.")
                     action = text_effect.slow_input("Would you like the dealer to win ties? Yes or No: ")
                     while True:

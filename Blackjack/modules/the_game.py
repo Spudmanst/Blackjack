@@ -13,23 +13,131 @@ MIN_ROUNDS = 1
 MAX_ROUNDS = 10
 
 class Player:
-    def __init__(self, name, number, active = True, bet = 0, cash = 0, hand = [], hand_size = 0, in_game = True, insure = False, score = 0, win = None):
+    def __init__(self, name, number, active = True, bet = 0, cash = 0, 
+                 dbl_avail = False, hand = [], hand_stand = False, hand_size = 0, 
+                 in_game = True, insure = False, score = 0, split = False, 
+                 split_avail = False, win = None
+        ):
         self.name = name
         self.number = number
         self.active = active
         self.bet = bet
+        self.bet_dbl = bet
+        self.bet_split = bet
         self.cash = cash
-        self.hand = hand
+        self.dbl_avail = dbl_avail
+        self.hand1 = hand
+        self.hand1_stand = hand_stand
+        self.hand2 = hand
+        self.hand2_stand = hand_stand
         self.hand_size = hand_size
         self.in_game = in_game
         self.insure = insure
         self.score = score
-        self.win = win
+        self.score2 = score
+        self.split = split
+        self.split_avail = split_avail
+        self.win1 = win
+        self.win2 = win
 
 def new_round(player):
-    player.win = None
     player.bet = 0
-    player.hand = []
+    player.bet_dbl = 0
+    player.bet_split = 0
+    player.dbl_avail = False
+    player.hand1 = []
+    player.hand1_stand = False
+    player.hand2 = []
+    player.hand2_stand = False
+    player.score1 = 0
+    player.score2 = 0
+    player.split = False
+    player.split_avail = False
+    player.win1 = None
+    player.win2 = None
+    
+def player_actions(player, cards, charlie_on):
+        if player.hand1_stand == False:
+            hand = player.hand1
+            score = player.score1
+            win = player.win1
+        else:
+            hand = player.hand2
+            score = player.score2
+            win = player.win2
+            text_effect.slow_type(f"---Player {player.name}'s second hand ---")
+            text_effect.slow_type(f"Player {player.name}'s hand: {hand[0]} and {hand[1]}\nHand score: {score}")
+            
+        if score == 21:
+            # This will only ever catch a split Blackjack as the standard Blackjack
+            # will bypass player_actions
+            text_effect.slow_type("Blackjack!")
+            win = "split_blackjack"
+            
+        else:
+            while score < 21:
+                
+                action = text_effect.slow_input(f"What would you like to do, '(H)it'{", '(D)ouble' " if player.dbl_avail else ""}{", 'S(p)lit' " if player.split_avail else ""} or '(S)tand'? ").lower()
+
+                if action in ("hit", "h") or (player.dbl_avail and action in ("double", "d")):
+                    if len(hand) == 2:
+                        player.dbl_avail = False
+                        player.split_avail = False
+                    new_card = cards.pop()
+                    # Comment above line and uncomment below line if testing for 5 card charlie
+                    # new_card = "Ace of Tests"
+                    hand.append(new_card)
+                    score = winnings.calculate_score(hand)
+                    text_effect.slow_type(f"Card received: {new_card}\nNew score: {score}")
+                    if action in ("double", "d"):
+                        player.cash -= player.bet
+                        player.bet_dbl += player.bet
+                        break
+                    # If player has 5 Card Charlie then end turn
+                    if charlie_on == True:
+                        if winnings.charlie_check(hand, score) == "Charlie":
+                            win = "Charlie"
+                            text_effect.slow_type(f"Player {player.name} has 5-Card Charlie!")
+                            break
+                elif action in ("split", "p") and player.split_avail == True:
+                    player.split = True
+                    player.dbl_avail = False
+                    player.split_avail = False
+                    split_card = hand.pop()
+                    new_card = cards.pop()
+                    hand.append(new_card)
+                    score = winnings.calculate_score(hand)
+                    text_effect.slow_type(f"Card received: {new_card}\nNew Hand: {hand[0]} and {hand[1]}\nNew score: {score}")
+                    player.hand2.append(split_card)
+                    player.hand2.append(cards.pop())
+                    player.score2 = winnings.calculate_score(player.hand2)
+                    player.cash -= player.bet
+                    player.bet_split = player.bet
+                elif action in ("stand", "s"):
+                    text_effect.slow_type(f"Player {player.name} stands with a score of {score}")
+                    break
+                elif action in ("exit", "e"):
+                    print("Exiting game.")
+                    exit()
+                else:
+                    print(f"Unknown command, please type an option to continue.\nAlternatively type 'exit' to finish playing")
+                
+        if score > 21:
+            text_effect.slow_type(f"Player {player.name} busts!")
+            win = "Bust"
+            
+        if player.hand1_stand == False:
+            player.hand1 = hand
+            player.hand1_stand = True
+            player.score1 = score
+            player.win1 = win
+        elif player.hand1_stand == True and len(player.hand2) == 2:
+            player.hand2 = hand
+            player.score2 = score
+            player.win2 = win
+            
+        if player.win1 == "Bust" and (player.win2 == "Bust" or len(player.hand2) == 0):
+            player.active = False
 
 def start_game(): 
     
@@ -158,15 +266,15 @@ def start_game():
         # Deal cards to all active players and calculate scores
         for player in players:
             if player.active:
-                player.hand = [cards.pop() for _ in range(2)]
-                player.score = winnings.calculate_score(player.hand)
+                player.hand1 = [cards.pop() for _ in range(2)]
+                player.score1 = winnings.calculate_score(player.hand1)
                 # Comment out above line if you wish to test when players having specific score
                 # player.score = 21
-                if player.score == 21:
-                    player.win = "Blackjack"
+                if player.score1 == 21:
+                    player.win1 = "Blackjack"
         
         # Used in multiple loops later on
-        all_players_blackjack = all(player.win == "Blackjack" for player in players if player.active)
+        all_players_blackjack = all(player.win1 == "Blackjack" for player in players if player.active)
         
         # Deal cards to dealer and check for Blackjack            
         dealer_hand = [cards.pop() for _ in range(2)]
@@ -186,12 +294,12 @@ def start_game():
                 
                 for player in players:
                     if player.active:
-                        text_effect.slow_type(f"Player {player.name}'s hand: {player.hand[0]} and {player.hand[1]}")
-                        if player.win == "Blackjack":
+                        text_effect.slow_type(f"Player {player.name}'s hand: {player.hand1[0]} and {player.hand1[1]}")
+                        if player.win1 == "Blackjack":
                             text_effect.slow_type(f"Player {player.name} has Blackjack!")
-                            player.win = "Push"
+                            player.win1 = "Push"
                         else:
-                            player.win = "Dealer_blackjack"
+                            player.win1 = "Dealer_blackjack"
                     text_effect.divide_lines()
                 
                 if all_players_blackjack:
@@ -204,8 +312,8 @@ def start_game():
             elif all_players_blackjack and not winnings.dealer_blackjack:
                 for player in players:
                     if player.active:
-                        text_effect.slow_type(f"Player {player.name}'s hand: {player.hand[0]} and {player.hand[1]}")
-                        player.win = "Blackjack"
+                        text_effect.slow_type(f"Player {player.name}'s hand: {player.hand1[0]} and {player.hand1[1]}")
+                        player.win1 = "Blackjack"
                 if num_of_players != 1:
                     text_effect.slow_type("All participating players have Blackjack. What about the dealer?")
                 else:
@@ -217,19 +325,23 @@ def start_game():
                 text_effect.sleep_line()
         
         # If no one has Blackjack then normal game play (also starting point for if insurance needs to be considered)    
-        if ins_active == True or winnings.dealer_blackjack == False or all_players_blackjack == False:
+        if ins_active == True  or winnings.dealer_blackjack == False: #or all_players_blackjack == False:
             # Players have their turn
             for player in players:
                 if player.active:
+                    if player.cash >= player.bet:
+                        player.dbl_avail = True
+                    if player.hand1[0].split()[0] == player.hand1[1].split()[0] and player.cash >= player.bet:
+                        player.split_avail = True
                     text_effect.slow_type(f"Dealer's hand: {dealer_hand[0]} and unknown")
-                    text_effect.slow_type(f"Player {player.name}'s hand: {player.hand[0]} and {player.hand[1]}")
+                    text_effect.slow_type(f"Player {player.name}'s hand: {player.hand1[0]} and {player.hand1[1]}")
                     
                     # Auto "stand" players on 21, otherwise ask what they would like to do.
-                    if player.score == 21:
+                    if player.score1 == 21:
                         text_effect.slow_type("Blackjack!")
-                        player.win = "Blackjack"
+                        player.win1 = "Blackjack"
                     else: 
-                        text_effect.slow_type(f"Player {player.name}'s score: {player.score}")
+                        text_effect.slow_type(f"Player {player.name}'s score: {player.score1}")
                         if ins_active and dealer_upcard == "Ace":
                             insure_cost = float(player.bet / 2)
                             if insure_cost < player.cash:
@@ -253,35 +365,10 @@ def start_game():
                                 text_effect.slow_type(f"Dealer's upcard is an ace, however you do not have enough funds to insure.")
                                 player.insure = False
                             
-                        while player.score < 21:
-                            action = text_effect.slow_input("What would you like to do, '(H)it' or '(S)tand'? ").lower()
-
-                            if action in ("hit", "h"):
-                                new_card = cards.pop()
-                                # Comment above line and uncomment below line if testing for 5 card charlie
-                                # new_card = "Ace of Tests"
-                                player.hand.append(new_card)
-                                player.score = winnings.calculate_score(player.hand)
-                                text_effect.slow_type(f"Card received: {new_card}\nNew score: {player.score}")
-                                # If player has 5 Card Charlie then end turn
-                                if charlie_active == True:
-                                    if winnings.charlie_check(player.hand, player.score) == "Charlie":
-                                        player.win = "Charlie"
-                                        text_effect.slow_type(f"Player {player.name} has 5-Card Charlie!")
-                                        break
-                            elif action in ("stand", "s"):
-                                text_effect.slow_type(f"Player {player.name} is stands with a score of {player.score}")
-                                break
-                            elif action in ("exit", "e"):
-                                print("Exiting game.")
-                                exit()
-                            else:
-                                print(f"Unknown command, type 'hit' or 'stand' to continue.\nType 'exit' to finish playing")
-
-                        if player.score > 21:
-                            text_effect.slow_type(f"Player {player.name} busts!")
-                            player.active = False
-                            player.win = "Bust"
+                        player_actions(player, cards, charlie_active)
+                            
+                        if len(player.hand2) == 2 and player.hand2_stand == False:
+                            player_actions(player, cards, charlie_active)
                     
                 text_effect.sleep_line()
 
@@ -299,10 +386,10 @@ def start_game():
                     text_effect.slow_type("Dealer has Blackjack")
                     for player in players:
                         if player.active:
-                            if player.win != "Blackjack":
-                                player.win = "Dealer_blackjack"
+                            if player.win1 != "Blackjack":
+                                player.win1 = "Dealer_blackjack"
                             else:
-                                player.win = "Push"
+                                player.win1 = "Push"
                 else:
                     if all_players_blackjack:
                         text_effect.slow_type("All active players have Blackjack, Dealer cannot match.")
@@ -329,10 +416,12 @@ def start_game():
         # Inform results and winnings / losses
         for player in players:
             if player.in_game:
-                winnings.winner(dealer_score, player) # Prints results to screen
-                win = winnings.player_payout(player.win, player.bet)
+                winnings.winner(dealer_score, player, hand = 1) # Prints results to screen
+                if len(player.hand2) != 0:
+                    winnings.winner(dealer_score, player, hand = 2)
+                win = winnings.player_payout(player, hand = 0) # Hand = 0 to ensure all winnings from multiple hands are counted
                 if win >= 0:
-                    player.cash += win + player.bet # must remember to give back their bet if they won
+                    player.cash += win + player.bet + player.bet_dbl # must remember to give back their bet if they won
                     """we give back bet here and not within winnings.player_payout as the player_payout
                     def is used elsewhere to display how much they won which does not include the bet
                     itself.""" 

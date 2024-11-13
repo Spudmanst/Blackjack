@@ -265,3 +265,15 @@ as well as calculate if all active players had blackjack outside of the loop tha
     - Asks the player mutliple times if they wish to ensure (once after each card they receive)
     - Awarded too much "winnings" when player won the insurance bet.
 I believe I have fixed them now!
+
+----------
+Blackjack version alpha 3.0.0pre-g
+----------
+- Implemented "dealer_wins_ties" variation
+- Implemented "double down" and "split" which required a lot of editing:
+    - Winnings.py needed many definitions to be heavily edited to allow for calculations and messages to show results of both hands and if the player had doubled.
+    - Class Player has been expanded to allow more values to be held and used for later logic
+    - Def new_round expanded to ensure all players are clear of previous round values
+    - New Def "player_actions". I've taken the core player actions logic and made it into a def so it can be reused if player has split hand.
+    - Expanded on player_actions (compared to previous logic) to allow for double down and splitting
+    - Inform players of results and winnings expanded to accommodate for splitting
