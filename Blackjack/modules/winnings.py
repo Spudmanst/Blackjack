@@ -18,29 +18,22 @@ def charlie_check(hand, score):
         return "None"
     
 # Gobal variable used if dealer has Blackjack to skip large parts of coding. 
-def dealer_has_blackjack(score):
-    global dealer_blackjack
+def does_dealer_have_blackjack(score):
+    global dealer_has_blackjack
     if score == 21:
-        dealer_blackjack = True
+        dealer_has_blackjack = True
     else:
-        dealer_blackjack = False
+        dealer_has_blackjack = False
 
 def player_payout(player, hand):
-    x = player_payout_logic(player.win1, player.bet, player.bet_dbl)
-    x = float(x)
-    if len(player.hand2) != 0:
-        y = player_payout_logic(player.win2, player.bet, player.bet_split)
-        y = float(y)
-    else:
-        y = 0
-    z = x + y
-    
     if hand == 1:
-        return x
-    elif hand == 2:
-        return y
+        x = player_payout_logic(player.win1, player.bet, player.bet_dbl)
     else:
-        return z
+        x = player_payout_logic(player.win2, player.bet, 0)
+        
+    x = float(x)
+
+    return x
         
 def player_payout_logic(win, bet, additional_bet):
     blackjack_multiplier = float(options.variations["blackjack_payout"])
@@ -50,17 +43,14 @@ def player_payout_logic(win, bet, additional_bet):
         return (bet * blackjack_multiplier)
     elif win == "Charlie":
         return (bet * charlie_multiplier)
-    elif win == False or win == "Bust":
+    elif win == False or win == "Bust" or (win == "Push" and dealer_wins_ties):
         return (-bet - additional_bet)
     elif win == "Push":
-        if dealer_wins_ties:
-            return (-bet - additional_bet)
-        else:
-            return 0 
-    elif win == "Insure":
+        return 0 
+    elif win == "Insure" :
         return (bet * 0.5) # This returns the insurance cost
-    else: # Last left is True or "split_blackjack" which does not get the
-        # Blackjack payout
+    else: # Last left is True, "split_blackjack" (which does not get the
+        # Blackjack payout) and "take_even". 
         return bet + additional_bet
     
 def winner(dealer_score, player, hand):
@@ -68,7 +58,7 @@ def winner(dealer_score, player, hand):
     result = player.win2 if hand == 2 else player.win1
     score = player.score2 if hand == 2 else player.score1
     win = None
-    win_amount = text_effect.player_payout_format(player_payout(player,hand))
+    win_amount = text_effect.player_payout_format(player_payout(player, hand))
     
     if result == "Blackjack":
         mgs =  f"Player {player.name} wins with Blackjack! Win {win_amount}!"
@@ -82,7 +72,7 @@ def winner(dealer_score, player, hand):
         
     elif result == "Dealer_blackjack" and player.insure == True:
         win = "Insure" # Need to ensure they recover their bet and insurance money
-        mgs = f"Player {player.name} loses to dealer's Blackjack but recover their bet and insurance of {win_amount}!"
+        mgs = f"Player {player.name} loses to dealer's Blackjack but recover their bet and insurance costs!"
         
     elif result == "Push":
         mgs = ((f"Player {player.name} ties with Dealer's Blackjack{" with their second hand" if hand == 2 else ""}! ")
@@ -90,8 +80,10 @@ def winner(dealer_score, player, hand):
     
     elif result == "Bust":
         mgs = f"Player {player.name} busted{" with their second hand" if hand == 2 else ""}! Lose {win_amount}!"
+        
+    elif result == "Take_even":
+        mgs = f"Player {player.name} decided to 'take even' and therefore wins {win_amount}!"
     
-    # else: i dont think this is needed as this appears in correct order anyway?
     elif dealer_score > 21:
         win = True
         mgs = f"Player {player.name} wins as the Dealer busted{" with their second hand" if hand == 2 else ""}! Win {win_amount}!"

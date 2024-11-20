@@ -277,3 +277,21 @@ Blackjack version alpha 3.0.0pre-g
     - New Def "player_actions". I've taken the core player actions logic and made it into a def so it can be reused if player has split hand.
     - Expanded on player_actions (compared to previous logic) to allow for double down and splitting
     - Inform players of results and winnings expanded to accommodate for splitting
+
+----------
+Blackjack version alpha 3.0.0pre-h
+----------
+- Condensed logic for player_payout_logic when "Push" means dealer wins.
+- Altered player_payout as causing issues with calculating correct value when a hand has been split.
+- Added player_active == False when system works out playing has no money to continue, this is because we had a player continue playing once they ran out of money.
+- Altered checking name code to include when players do not type anything for a name.
+- Added "of {num_of_rounds}" to help players know when the game is over. 
+- Slight tweaks to code, spacing and comments to try and help make more readable.
+- Changed some variable names to make clearer what they are or used for.
+- After reviewing online, if insurance bets are in play then this is resolved before anything else. Have re-ararnged how and when insurance bets are resolved.
+- Found there is an option to "take even" when you have blackjack and then offered insurance. Basically "take even" is an alternatve insurance whereby you agree
+to take a 1:1 payout immediately and step out of the round. The downside to this is if the dealer doesn't have Blackjack then you lose the 3:2 payout you would 
+have been given if you opted to continue. The obvious benefit is that if the dealer does have Blackjack then you have won some money instead of drawing and only
+receiving your bet back. This has now been implemented. 
+- Added an explanation of "take even" within the advice section.
+- Added line breaks into Advance section of terminology (forgot to add previously).
