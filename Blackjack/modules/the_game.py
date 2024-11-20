@@ -282,9 +282,9 @@ def start_game():
         # Deal cards to all active players and calculate scores
         for player in players:
             if player.active:
-                # player.hand1 = [cards.pop() for _ in range(2)]
+                player.hand1 = [cards.pop() for _ in range(2)]
                 # Comment out above line and use below if testing specific card combinations.
-                player.hand1 = ["Ace of Tests", "Ace of Tests2"] #cards.pop()]
+                # player.hand1 = ["Ace of Tests", "Ace of Tests2"] #cards.pop()]
                 player.score1 = winnings.calculate_score(player.hand1)
                 # Comment out above line if you wish to test when players having specific score
                 # player.score = 21
@@ -295,9 +295,9 @@ def start_game():
         all_players_blackjack = all(player.win1 == "Blackjack" for player in players if player.active)
         
         # Deal cards to dealer and check for Blackjack            
-        # dealer_hand = [cards.pop() for _ in range(2)]
+        dealer_hand = [cards.pop() for _ in range(2)]
         # Comment above line out and use the below if you manually wish to test cards
-        dealer_hand = ["Ace of Tests", "King of Tests"] #cards.pop()]
+        # dealer_hand = ["Ace of Tests", "King of Tests"] #cards.pop()]
         dealer_score = winnings.calculate_score(dealer_hand)
         # Comment out above line if you wish to test when dealer having specific score
         # dealer_score = 21

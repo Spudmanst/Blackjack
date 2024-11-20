@@ -1,6 +1,4 @@
 FEATURES / ITEMS TO WORK ON:
-*** Remember to put insurance to false (turned on for testing) ***
-*** remember to make hands random again (specific cards chosen for testing) ***
 ----------
 FEATURES ADDED:
 - Would like custom win annoucement for getting Blackjack (i.e. ace + picture card || 10 ) (ADDED IN 1.01)

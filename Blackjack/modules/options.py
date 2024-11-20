@@ -16,7 +16,7 @@ variations = {
     "5_card_charlie" : False,
     "charlie_payout" : 1,
     "num_of_packs" : 2,
-    "insurance" : True,
+    "insurance" : False,
     "s17" : True,
     "dealer_wins_ties" : False
 }
