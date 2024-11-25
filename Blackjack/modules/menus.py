@@ -6,7 +6,9 @@ import sys
 
 def main_menu():
     while True:
-        action = text_effect.slow_input("What would you like to do? (P)lay, (O)ptions, (H)elp, (E)xit: ").lower()
+        action = text_effect.slow_input(
+            "What would you like to do? (P)lay, (O)ptions, (H)elp, (E)xit: "
+        ).lower()
 
         if action in ("play", "p"):
             text_effect.divide_lines()
@@ -20,4 +22,6 @@ def main_menu():
             text_effect.divide_lines()
             sys.exit()
         else:
-            print("Unknown command, type 'play', 'options', 'help' or 'exit'.")
+            print(
+                "Unknown command, type 'play', 'options', 'help' or 'exit'."
+            )

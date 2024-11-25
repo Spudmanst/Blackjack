@@ -31,7 +31,9 @@ def reset_to_defaults(settings, defaults):
     settings.update(defaults)
 
 def main():
-    text_effect.slow_type("From here you can alter variations of the game.")
+    text_effect.slow_type(
+        "From here you can alter variations of the game."
+    )
     while True:
         action = text_effect.slow_input(
             "What would you like to do?:\n"
@@ -63,23 +65,35 @@ def main():
                 text_effect.divide_lines()
                 
                 if action in "1":
-                    text_effect.slow_type("This is how much you will earn for winning with Blackjack, default is 1.5.")
+                    text_effect.slow_type(
+                        "This is how much you will earn for winning with Blackjack, default is 1.5."
+                    )
                     while True:
-                        action = text_effect.slow_input("Please advise of a multiplier between 1 & 10: ")
+                        action = text_effect.slow_input(
+                            "Please advise of a multiplier between 1 & 10: "
+                        )
                         try:
                             action_float = float(action) # action is currently string so change to float
                             if 1 <= action_float <= 10:
                                 if action.count(".") == 0 or len(action.split(".", 1)[1]) <= 1: # check for . and if so check only 1 number after .
                                     variations["blackjack_payout"] = action_float
-                                    text_effect.slow_type(f"Blackjack payout is now {variations["blackjack_payout"]}")
+                                    text_effect.slow_type(
+                                        f"Blackjack payout is now {variations["blackjack_payout"]}"
+                                    )
                                     text_effect.divide_and_read()
                                     break
                                 else:
-                                    text_effect.slow_type("Invalid input. Please enter a number with up to 1 decimal place.")
+                                    text_effect.slow_type(
+                                        "Invalid input. Please enter a number with up to 1 decimal place."
+                                    )
                             else:
-                                text_effect.slow_type("Invalid input. Please enter a number between 1.0 and 10.")
+                                text_effect.slow_type(
+                                    "Invalid input. Please enter a number between 1.0 and 10."
+                                )
                         except ValueError:
-                            text_effect.slow_type("Invalid input. Please enter a valid number between 1.0 and 10.")
+                            text_effect.slow_type(
+                                "Invalid input. Please enter a valid number between 1.0 and 10."
+                            )
                         
                 elif action in "2":
                     text_effect.slow_type(
@@ -88,7 +102,9 @@ def main():
                         "Blackjack. This rule is specific to the player. Default is False."
                     )
                     while True:
-                        action = text_effect.slow_input("Would you like 5 Card Charlie on? Yes or no: ").lower()
+                        action = text_effect.slow_input(
+                            "Would you like 5 Card Charlie on? Yes or no: "
+                        ).lower()
                         if action in ("yes", "y"):
                             variations["5_card_charlie"] = True
                             break
@@ -96,29 +112,45 @@ def main():
                             variations["5_card_charlie"] = False
                             break
                         else:
-                            text_effect.slow_type("Unknown command, please type Yes or No.")
+                            text_effect.slow_type(
+                                "Unknown command, please type Yes or No."
+                            )
                         
-                    text_effect.slow_type(f"Setting for 'Is 5 Card Charlie active?' is set to {variations["5_card_charlie"]}.")
+                    text_effect.slow_type(
+                        f"Setting for 'Is 5 Card Charlie active?' is set to {variations["5_card_charlie"]}."
+                    )
                     text_effect.divide_and_read()
                             
                 elif action in "3":
-                    text_effect.slow_type("This is how much you will earn for winning with 5 Card Charlie, default is 1.")
+                    text_effect.slow_type(
+                        "This is how much you will earn for winning with 5 Card Charlie, default is 1."
+                    )
                     while True:
-                        action = text_effect.slow_input("Please advise of a multiplier between 1 & 5: ")
+                        action = text_effect.slow_input(
+                            "Please advise of a multiplier between 1 & 5: "
+                        )
                         try:
                             action_float = float(action)
                             if 1 <= action_float <= 5:
                                 if action.count(".") == 0 or len(action.split(".", 1)[1]) <= 1:
                                     variations["charlie_payout"] = action_float
-                                    text_effect.slow_type(f"Payout for 5 Card Charlie is now {variations["charlie_payout"]}.")
+                                    text_effect.slow_type(
+                                        f"Payout for 5 Card Charlie is now {variations["charlie_payout"]}."
+                                    )
                                     text_effect.divide_and_read()
                                     break
                                 else:
-                                    text_effect.slow_type("Invalid input. Please enter a number with up to 1 decimal place.")
+                                    text_effect.slow_type(
+                                        "Invalid input. Please enter a number with up to 1 decimal place."
+                                    )
                             else:
-                                text_effect.slow_type("Invalid input. Please enter a number between 1.0 and 5.")
+                                text_effect.slow_type(
+                                    "Invalid input. Please enter a number between 1.0 and 5."
+                                )
                         except ValueError:
-                            text_effect.slow_type("Invalid input. Please enter a valid number between 1.0 and 5.")
+                            text_effect.slow_type(
+                                "Invalid input. Please enter a valid number between 1.0 and 5."
+                            )
                             
                 elif action in "4":
                     text_effect.slow_type(
@@ -126,15 +158,21 @@ def main():
                         "Default is 2."
                     )
                     while True:
-                        action = text_effect.slow_input("How many decks would you like to use between 1 and 8: ")
+                        action = text_effect.slow_input(
+                            "How many decks would you like to use between 1 and 8: "
+                        )
                         try:
                             if 1 <= int(action) <= 8:
                                 variations["num_of_packs"] = int(action)
-                                text_effect.slow_type(f"Number of packs being used is now {variations["num_of_packs"]}.")
+                                text_effect.slow_type(
+                                    f"Number of packs being used is now {variations["num_of_packs"]}."
+                                )
                                 text_effect.divide_and_read()
                                 break
                         except ValueError:
-                            text_effect.slow_type("Invalid input. Please enter a whole number between 1 and 8.")
+                            text_effect.slow_type(
+                                "Invalid input. Please enter a whole number between 1 and 8."
+                            )
                             
                 elif action in "5":
                     text_effect.slow_type(
@@ -145,7 +183,9 @@ def main():
                         "Default is off."
                     )
                     while True:
-                        action = text_effect.slow_input("Would you like Insurance on? Yes or no: ").lower()
+                        action = text_effect.slow_input(
+                            "Would you like Insurance on? Yes or no: "
+                        ).lower()
                         if action in ("yes", "y"):
                             variations["insurance"] = True
                             break
@@ -153,9 +193,13 @@ def main():
                             variations["insurance"] = False
                             break
                         else:
-                            text_effect.slow_type("Unknown command, please type Yes or No.")
+                            text_effect.slow_type(
+                                "Unknown command, please type Yes or No."
+                            )
                     
-                    text_effect.slow_type(f"Setting for 'Is insurance allowed?' is set to {variations['insurance']}.")
+                    text_effect.slow_type(
+                        f"Setting for 'Is insurance allowed?' is set to {variations['insurance']}."
+                    )
                     text_effect.divide_and_read()
                             
                 elif action in "6":
@@ -164,7 +208,9 @@ def main():
                         "S17 means the dealer will 'stand', whereas H17 means they will 'hit'. Default is S17."
                     )
                     while True:
-                        action = text_effect.slow_input("Which rule would you like? (S)17 or (H)17: ").lower()
+                        action = text_effect.slow_input(
+                            "Which rule would you like? (S)17 or (H)17: "
+                        ).lower()
                         if action in "s":
                             variations["s17"] = True
                             break
@@ -172,14 +218,22 @@ def main():
                             variations["s17"] = False
                             break
                         else:
-                            text_effect.slow_type("Unknown command, please type S or H.")
+                            text_effect.slow_type(
+                                "Unknown command, please type S or H."
+                            )
                     
-                    text_effect.slow_type(f"Setting for 'Use s17?' is set to {variations["s17"]}.")
+                    text_effect.slow_type(
+                        f"Setting for 'Use s17?' is set to {variations["s17"]}."
+                    )
                     text_effect.divide_and_read()
                         
                 elif action in "7":
-                    text_effect.slow_type("'Dealer wins ties' does exactly as it states. Default is off.")
-                    action = text_effect.slow_input("Would you like the dealer to win ties? Yes or No: ")
+                    text_effect.slow_type(
+                        "'Dealer wins ties' does exactly as it states. Default is off."
+                    )
+                    action = text_effect.slow_input(
+                        "Would you like the dealer to win ties? Yes or No: "
+                    )
                     while True:
                         if action in ("yes", "y"):
                             variations["dealer_wins_ties"] = True
@@ -188,9 +242,13 @@ def main():
                             variations["dealer_wins_ties"] = False
                             break
                         else:
-                            text_effect.slow_type("Unknown command, please type Yes or No.")
+                            text_effect.slow_type(
+                                "Unknown command, please type Yes or No."
+                            )
                         
-                    text_effect.slow_type(f"Setting for 'dealer wins ties' is set to {variations['dealer_wins_ties']}.")
+                    text_effect.slow_type(
+                        f"Setting for 'dealer wins ties' is set to {variations['dealer_wins_ties']}."
+                    )
                     text_effect.divide_and_read()
                     
                 elif action in ("default", "d"):
@@ -199,9 +257,13 @@ def main():
                 elif action in ("exit", "e"):
                     main()
                 else: 
-                    text_effect.slow_type("Unknown command, please type a number corresponding to the action you wish to take.")
+                    text_effect.slow_type(
+                        "Unknown command, please type a number corresponding to the action you wish to take."
+                    )
             
         elif action in "3":
             menus.main_menu()
         else:
-            text_effect.slow_type("Unknown command, please type a number corresponding to the action you wish to take.")
+            text_effect.slow_type(
+                "Unknown command, please type a number corresponding to the action you wish to take."
+            )

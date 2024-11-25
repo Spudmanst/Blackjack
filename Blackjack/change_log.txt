@@ -295,3 +295,14 @@ have been given if you opted to continue. The obvious benefit is that if the dea
 receiving your bet back. This has now been implemented. 
 - Added an explanation of "take even" within the advice section.
 - Added line breaks into Advance section of terminology (forgot to add previously).
+
+----------
+Blackjack version beta 3.0.0
+----------
+- Slightly increase speed of which text is printed from 0.02 delay to 0.015, felt like the game needed a minor increase to speed.
+- Added sleep_line() after we show dealer has Blackjack when insurance is False, otherwise there is no divide between advising and showing what Player 1 has. The 
+delay will give the players processing time to understand what is happening.
+- Spread coding over more lines to make more readable.
+- Made coding more consistent with the style of writing.
+- Reworded some comments to make it more clear what is happening.
+- Renamed "winnings.py" to "win_check.py" as this makes more sense when reviewing code.

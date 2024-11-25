@@ -67,7 +67,7 @@ def winner(dealer_score, player, hand):
         mgs = f"Player {player.name} wins with 5-Card Charlie{" with their second hand" if hand == 2 else ""}! Win {win_amount}!"
     
     elif result == "Dealer_blackjack" and player.insure == False:
-        win = False # Don't think this is needed anymore, need to test
+        win = False
         mgs = f"Player {player.name} loses to dealer's Blackjack{" with their second hand" if hand == 2 else ""}! Lose {win_amount}!"
         
     elif result == "Dealer_blackjack" and player.insure == True:

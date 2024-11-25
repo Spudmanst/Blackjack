@@ -23,12 +23,12 @@ def sleep_line():
     std_sleep()
 
 # Provide appearance of computer typing instead of text instantly appearing, slightly quicker 
-def slow_input(prompt, delay=0.02):
+def slow_input(prompt, delay=0.015):
     slow_type(prompt, delay, end='')  # No newline at the end
     return input()  # Capture user input on the same line
 
 # Provide appearance of computer typing instead of text instantly appearing        
-def slow_type(text, delay=0.02, end="\n"):
+def slow_type(text, delay=0.015, end="\n"):
     for char in text:
         sys.stdout.write(char)
         sys.stdout.flush()  # Flush the output to ensure it prints immediately
