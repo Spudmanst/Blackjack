@@ -1,12 +1,7 @@
 FEATURES / ITEMS TO WORK ON:
-- Add "help" to explain the game and special rules
-- Once Betting is available, understand more complex betting rules such as insurance and implement
-- Allow players to turn off betting
-- LONG TERM GOAL - Migrate to SQL database to hold player names and keep record of money long term. Need a way to add money if they run out,
-thinking "bank loan" which they can repay if they ever earn back the money.
 ----------
 FEATURES ADDED:
-- Would like custom win annoucement for getting Blackjack (i.e. picture card + ace) (ADDED IN 1.01)
+- Would like custom win annoucement for getting Blackjack (i.e. ace + picture card || 10 ) (ADDED IN 1.01)
 - Would like 5-Card Charlie rule implimented (5 Cards under 21 is better than 21 but lower than Blackjack) (ADDED IN 1.2.0)
 - Multiplayer (ADDED IN 1.02)
 - Betting (ADDED IN 2.0.0)
@@ -19,8 +14,16 @@ FEATURES ADDED:
 - If all players have blackjack and dealer doesn't then dealer to show cards then go to payout (ADDED IN 2.4.0)
 - If all players ran out of funds, then end game early to prevent running through all rounds (ADDED IN 2.4.0)
 - If a player runs out of funds, advises once and then do not mention them again until scoreboard at end. (ADDED IN 2.4.1)
+- Add "help" to explain the game and special rules (ADDED IN 3.0.0)
+- Once Betting is available, understand more complex betting rules such as insurance and implement (ADDED IN 3.0.0)
+- 
 ----------
 SCRAPPED IDEAS:
 - More suspense if all players have Blackjack and seeing if dealer can match if card visible is Ace, picture or 10. Scrapped because we have a different
 sequence of events if the dealer has Blackjack as they instantly reveal they do. So by default, players will know Dealer doesn't have Blackjack unless we
 change the order of events, which doesn't really work as the purpose of the dealer showing they have Blackjack is to speed up the game.
+- Allow players to turn off betting. I would like to focus efforts into attempting SQL database integration before deadline.
+- Doubling after splitting - I would like to focus efforts into attempting SQL database integration before deadline.
+- Resplitting (i.e. splitting after a split) I would like to focus efforts into attempting SQL database integration before deadline plus I think my code
+needs to be better and tided up before attempting this.
+- LONG TERM GOAL - Migrate to SQL database to hold player names and keep record of money long term. Scrapped as not enough time to do and meet personal deadline.

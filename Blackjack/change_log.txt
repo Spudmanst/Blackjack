@@ -109,12 +109,12 @@ an inner loop which needs to be broken out of or sys.exit().
 Blackjack-Ver 1.2.0.py
 ----------
 - Previous update checked with Dealer Blackjack earlier on, so have removed the same check later (lines 188 - 190)
-- Implimented 5-Card Charlie rule, tested and appears to work as intended.
+- Implemented 5-Card Charlie rule, tested and appears to work as intended.
 
 ----------
 Blackjack-Ver 2.0.0.py
 ----------
-- Betting has been implimented, tested and appears functional. Betting takes into consideration the type of win and credits
+- Betting has been implemented, tested and appears functional. Betting takes into consideration the type of win and credits
 the player accordingly.
 - ADDED on "todo" 
     - Skips player turn if cannot bet.
@@ -197,3 +197,112 @@ I feel like it makes sense to clean at the end rather than the beginning of the 
 - Added player.in_game and player.active, these are used to help skip players, end the game early and help make the code more readable.
 - "did_not_bet" is no longer required and therefore been removed.
 
+----------
+Blackjack-Ver 2.4.2.py
+----------
+- Created modules folder and moved aspects of the game into said file. This is to help reduce the size of the main Blackjack.py as well as allow development of 
+different aspects of the game without having to edit the main Blackjack.py file
+
+----------
+Blackjack-Ver alpha 3.0.0pre-a.py
+----------
+- Further divided the game into seperate moduels to enable ease of editing relevant areas of the game code as well as overall readability
+- NEW FEATURE - Main menu which includes "options" and "help" (both currently WIP). Options currently have no impact on the game but will do eventually.
+- NEW FUNCTION - Text Effect - divide_and_read - Allows to easily split the screen and also allow more time to allow the player a bit of extra time to read.
+
+----------
+Blackjack-Ver alpha 3.0.0pre-b.py
+----------
+- Option to add additional decks now implemented. Changed default to 2. The system will notify players when the deck has been shuffled. If more than one 
+deck is being used then it means that the exact same card can appear more than once, e.g. 8 of clubs can appear 4 times if four decks being used. I had 
+to considered when the deck is shuffled again as we cannot be in a position where we run out of cards midway through a game. I figured it would be very easy 
+for each player to need 3 or 4 cards every turn, so we need at least 24 (3*8) to  32 (4*8) cards at any given time (7 max players + dealer = 8). I'm playing 
+safe by saying the deck needs shuffling when there are less than 40 cards. This should ensure we do not run out of cards but also allow 1 or 2 players to have 
+a round or two without the deck being shuffled (if default is changed to 1 deck of cards by the player). I have also put in that the cards are shuffled when
+less than half the deck is remaining, this should help minimise any card counters but also make it visible that the cards are being shuffled in larger games /
+longer games.
+
+----------
+Blackjack-Ver alpha 3.0.0pre-c.py
+----------
+- num_of_packs within the_game.py was a gobal variable that I believe is not updating if someone plays a game, then goes back to menu, changes the num of packs,
+then goes back into a game. This variable is now places within the def start_game() as to ensure it checks this value at the point where it cannot be changed midway
+through a game but will also check if a new game starts since settings can be changed between games.
+- removed text_effect.divide_line from option 3 when asked if you would like to view current settings or change them. Option 3 returns to main menu and created 
+a line break however the main menu already does this, therefore safe to remove from option 3.
+
+----------
+Blackjack-Ver alpha 3.0.0pre-d.py
+----------
+- Forgot to comment out list of cards again from previous testing, now complete.
+- Altering the payout for Blackjack and 5 Card Charlie now implemented and working.
+- Being able to turn on and off 5 Card Charlie now implemented and working.
+
+----------
+Blackjack-Ver alpha 3.0.0pre-e.py
+----------
+- Implemented "insurance" which required many edit to code:
+    - self.insure added to Player class
+    - ins_active now checks at start_game()
+    - player cash is altered at beginning once player.bet has been assigned (we need to deduct cash now before a check later to see if player can afford insurance)
+    - dealer_upcard added, insurance only available if the upcard is an Ace
+    - Previously added coding to speed up the game if dealer has blackjack can now be bypassed if ins_active == True
+    - Alteration to how play obtain their winnings as previous code did not deduct the bet until the end of game, we cannot do this anymore so the code needs to add
+    back th original bet if the player wins or pushes.
+    - Have to add in check for dealer_blackjack later on just before dealer's turn if ins_active == True
+- Made change to all_players_blackjack as text didn't make sense if only one player.
+
+----------
+Blackjack-Ver alpha 3.0.0pre-f.py
+----------
+- Implemented "s17" rule variation
+- Removed double entry code and re-arranged when we calculate if all active players have blackjack. Unsure why I had it calculate if a player had blackjack twice
+as well as calculate if all active players had blackjack outside of the loop that would use it, seems to be computing a variable for no reason otherwise!
+- Code edited to try and make more readable
+- Deleted unrequired comments where it was obvious what was happening, as well as add comments to help explain more complex aspects.
+- Apparently I never tested the insurance as I've found multiple issues:
+    - Doesn't give back money if player wins on insurance
+    - Asks the player mutliple times if they wish to ensure (once after each card they receive)
+    - Awarded too much "winnings" when player won the insurance bet.
+I believe I have fixed them now!
+
+----------
+Blackjack version alpha 3.0.0pre-g
+----------
+- Implemented "dealer_wins_ties" variation
+- Implemented "double down" and "split" which required a lot of editing:
+    - Winnings.py needed many definitions to be heavily edited to allow for calculations and messages to show results of both hands and if the player had doubled.
+    - Class Player has been expanded to allow more values to be held and used for later logic
+    - Def new_round expanded to ensure all players are clear of previous round values
+    - New Def "player_actions". I've taken the core player actions logic and made it into a def so it can be reused if player has split hand.
+    - Expanded on player_actions (compared to previous logic) to allow for double down and splitting
+    - Inform players of results and winnings expanded to accommodate for splitting
+
+----------
+Blackjack version alpha 3.0.0pre-h
+----------
+- Condensed logic for player_payout_logic when "Push" means dealer wins.
+- Altered player_payout as causing issues with calculating correct value when a hand has been split.
+- Added player_active == False when system works out playing has no money to continue, this is because we had a player continue playing once they ran out of money.
+- Altered checking name code to include when players do not type anything for a name.
+- Added "of {num_of_rounds}" to help players know when the game is over. 
+- Slight tweaks to code, spacing and comments to try and help make more readable.
+- Changed some variable names to make clearer what they are or used for.
+- After reviewing online, if insurance bets are in play then this is resolved before anything else. Have re-ararnged how and when insurance bets are resolved.
+- Found there is an option to "take even" when you have blackjack and then offered insurance. Basically "take even" is an alternatve insurance whereby you agree
+to take a 1:1 payout immediately and step out of the round. The downside to this is if the dealer doesn't have Blackjack then you lose the 3:2 payout you would 
+have been given if you opted to continue. The obvious benefit is that if the dealer does have Blackjack then you have won some money instead of drawing and only
+receiving your bet back. This has now been implemented. 
+- Added an explanation of "take even" within the advice section.
+- Added line breaks into Advance section of terminology (forgot to add previously).
+
+----------
+Blackjack version beta 3.0.0
+----------
+- Slightly increase speed of which text is printed from 0.02 delay to 0.015, felt like the game needed a minor increase to speed.
+- Added sleep_line() after we show dealer has Blackjack when insurance is False, otherwise there is no divide between advising and showing what Player 1 has. The 
+delay will give the players processing time to understand what is happening.
+- Spread coding over more lines to make more readable.
+- Made coding more consistent with the style of writing.
+- Reworded some comments to make it more clear what is happening.
+- Renamed "winnings.py" to "win_check.py" as this makes more sense when reviewing code.
