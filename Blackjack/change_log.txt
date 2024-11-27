@@ -306,3 +306,8 @@ delay will give the players processing time to understand what is happening.
 - Made coding more consistent with the style of writing.
 - Reworded some comments to make it more clear what is happening.
 - Renamed "winnings.py" to "win_check.py" as this makes more sense when reviewing code.
+
+----------
+Blackjack version beta 3.0.1
+----------
+- Typo found at beginning, "How many money" changed to "How much money"!

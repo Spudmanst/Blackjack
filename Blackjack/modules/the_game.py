@@ -215,7 +215,7 @@ def start_game():
     while True:
         try:
             starting_cash = int(text_effect.slow_input(
-                f"How many money should all players start with? Minimum ${MIN_CASH}, Maximum ${MAX_CASH}: $"
+                f"How much money should all players start with? Minimum ${MIN_CASH}, Maximum ${MAX_CASH}: $"
                 ))
             if MIN_CASH <= starting_cash <= MAX_CASH:
                 break
