@@ -2,15 +2,10 @@ from . import options
 from . import playing_cards
 from . import text_effect
 from . import win_check
-import sys
 
 # Constants for game limits
 MIN_PLAYERS = 1
 MAX_PLAYERS = 7
-MIN_CASH = 10
-MAX_CASH = 10000
-MIN_ROUNDS = 1
-MAX_ROUNDS = 10
 
 class Player:
     def __init__(self, name, number, active = True, bet = 0, cash = 0, 
@@ -171,16 +166,19 @@ def player_actions(player, cards, charlie_on):
 
 def start_game(): 
     
+    starting_cash = int(options.variations["starting_cash"])
+    num_of_rounds = int(options.variations["num_of_rounds"])
+    num_of_packs = int(options.variations["num_of_packs"])
+    charlie_active = options.variations["5_card_charlie"]
+    ins_active = options.variations["insurance"]
+    s17_rule = options.variations["s17"]
+    
     """
     Bring in required settings from options. Create variables to ensure we don't
     keep asking the computer to calculate these each time we wish to use them.
     Also grabbing the variables now when the game has started ensures we have the 
     most up to date settings incase the user changes them.
     """
-    num_of_packs = int(options.variations["num_of_packs"])
-    charlie_active = options.variations["5_card_charlie"]
-    ins_active = options.variations["insurance"]
-    s17_rule = options.variations["s17"]
     
     while True:
         try:
@@ -211,38 +209,6 @@ def start_game():
                 break
         except Exception as e:
             print("An error occurred: ", e)
-                        
-    while True:
-        try:
-            starting_cash = int(text_effect.slow_input(
-                f"How much money should all players start with? Minimum ${MIN_CASH}, Maximum ${MAX_CASH}: $"
-                ))
-            if MIN_CASH <= starting_cash <= MAX_CASH:
-                break
-            else:
-                print(
-                    f"Invalid input, must use a whole number between {MIN_CASH} and {MAX_CASH} to continue."
-                )
-        except ValueError:
-            print(
-                f"Invalid input, please enter a whole number between {MIN_CASH} and {MAX_CASH} (don't use commas)."
-            )
-            
-    while True:
-        try:
-            num_of_rounds = int(text_effect.slow_input(
-                f"How many rounds would you like? Minimum {MIN_ROUNDS}, Maximum {MAX_ROUNDS}: "
-                ))
-            if MIN_ROUNDS <= num_of_rounds <= MAX_ROUNDS:
-                break
-            else:
-                print(
-                    f"Invalid input, must use a number between {MIN_ROUNDS} - {MAX_ROUNDS} to continue."
-                )
-        except ValueError:
-            print(
-                f"Invalid input, please enter a number between {MIN_ROUNDS} and {MAX_ROUNDS}."
-            )
     
     # Create empty list, ready to receive player information.
     players = []
