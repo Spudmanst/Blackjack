@@ -2,6 +2,8 @@ from . import menus
 from . import text_effect
 
 default_variations = {
+    "starting_cash" : 1000,
+    "num_of_rounds" : 3,
     "blackjack_payout" : 1.5,
     "5_card_charlie" : False,
     "charlie_payout" : 1,
@@ -12,6 +14,8 @@ default_variations = {
 }
 
 variations = {
+    "starting_cash" : 1000,
+    "num_of_rounds" : 3,
     "blackjack_payout" : 1.5,
     "5_card_charlie" : False,
     "charlie_payout" : 1,
@@ -51,13 +55,15 @@ def main():
             while True: 
                 action = text_effect.slow_input(
                     "What setting would you like to change:\n"
-                    "1) Blackjack payout\n"
-                    "2) 5 Card Charlie\n"
-                    "3) Charlie payout\n"
-                    "4) Number of packs\n"
-                    "5) Insurance\n"
-                    "6) S17 or H17\n"
-                    "7) Dealer wins ties\n"
+                    "1) Starting cash\n"
+                    "2) Number of rounds\n"
+                    "3) Blackjack payout\n"
+                    "4) 5 Card Charlie\n"
+                    "5) Charlie payout\n"
+                    "6) Number of packs\n"
+                    "7) Insurance\n"
+                    "8) S17 or H17\n"
+                    "9) Dealer wins ties\n"
                     "You can respond with 'default' if you wish to go back to the orignal settings.\n"
                     "Alternatively you can type 'exit' to leave this menu.\n" 
                     "Input: "
@@ -65,6 +71,52 @@ def main():
                 text_effect.divide_lines()
                 
                 if action in "1":
+                    text_effect.slow_type(
+                        "Change how much each player starts with, default is $1,000."
+                    )
+                    while True:
+                        try:
+                            action = text_effect.slow_input(
+                                "How much should each player start with? Whole number between 10 & 10,000.\n$"
+                            )
+                            if 10 <= int(action) <= 10000:
+                                variations["starting_cash"] = int(action)
+                                text_effect.slow_type(
+                                    f"Starting cash is now ${variations["starting_cash"]}."
+                                )
+                                text_effect.divide_and_read()
+                                break
+                            else:
+                                raise ValueError
+                        except ValueError:
+                            text_effect.slow_type(
+                                "Please type a whole number between 10 & 10,000 (no commas)."
+                            )
+                
+                elif action in "2":
+                    text_effect.slow_type(
+                        "You can alter how many rounds there are in a game, default is 3."
+                    )
+                    while True:
+                        action = text_effect.slow_input(
+                            "Please advise how many rounds you would like, between 1 & 10."
+                        )
+                        try:
+                            if 1 <= int(action) <= 10:
+                                variations["num_of_rounds"] = int(action)
+                                text_effect.slow_type(
+                                    f"Number of rounds has been set to {variations["num_of_rounds"]}."
+                                )
+                                text_effect.divide_and_read()
+                                break
+                            else:
+                                raise ValueError
+                        except ValueError:
+                            text_effect.slow_type(
+                                "Please enter a whole number between 1 & 10 to continue."
+                            )
+                
+                elif action in "3":
                     text_effect.slow_type(
                         "This is how much you will earn for winning with Blackjack, default is 1.5."
                     )
@@ -87,15 +139,13 @@ def main():
                                         "Invalid input. Please enter a number with up to 1 decimal place."
                                     )
                             else:
-                                text_effect.slow_type(
-                                    "Invalid input. Please enter a number between 1.0 and 10."
-                                )
+                                raise ValueError
                         except ValueError:
                             text_effect.slow_type(
                                 "Invalid input. Please enter a valid number between 1.0 and 10."
                             )
                         
-                elif action in "2":
+                elif action in "4":
                     text_effect.slow_type(
                         "You can enable 5 Card Charlie. If the player reaches 5 cards without busting "
                         "then they automatically stick. 5 Card Charlie is better than 21 but worse than "
@@ -121,7 +171,7 @@ def main():
                     )
                     text_effect.divide_and_read()
                             
-                elif action in "3":
+                elif action in "5":
                     text_effect.slow_type(
                         "This is how much you will earn for winning with 5 Card Charlie, default is 1."
                     )
@@ -144,15 +194,13 @@ def main():
                                         "Invalid input. Please enter a number with up to 1 decimal place."
                                     )
                             else:
-                                text_effect.slow_type(
-                                    "Invalid input. Please enter a number between 1.0 and 5."
-                                )
+                                raise ValueError
                         except ValueError:
                             text_effect.slow_type(
                                 "Invalid input. Please enter a valid number between 1.0 and 5."
                             )
                             
-                elif action in "4":
+                elif action in "6":
                     text_effect.slow_type(
                         "This is how many deck of cards are used to generate the full pile the dealer pulls from. "
                         "Default is 2."
@@ -174,7 +222,7 @@ def main():
                                 "Invalid input. Please enter a whole number between 1 and 8."
                             )
                             
-                elif action in "5":
+                elif action in "7":
                     text_effect.slow_type(
                         "Allows the option to insure if the dealer has a chance of Blackjack. "
                         "Players may pay half their bet to insure. If a player insurers and the dealer has Blackjack "
@@ -202,7 +250,7 @@ def main():
                     )
                     text_effect.divide_and_read()
                             
-                elif action in "6":
+                elif action in "8":
                     text_effect.slow_type(
                         "S17 or H17 refers to how the dealer will act when they an Ace in their hand and reach a score of 17. "
                         "S17 means the dealer will 'stand', whereas H17 means they will 'hit'. Default is S17."
@@ -227,7 +275,7 @@ def main():
                     )
                     text_effect.divide_and_read()
                         
-                elif action in "7":
+                elif action in "9":
                     text_effect.slow_type(
                         "'Dealer wins ties' does exactly as it states. Default is off."
                     )
@@ -258,7 +306,8 @@ def main():
                     main()
                 else: 
                     text_effect.slow_type(
-                        "Unknown command, please type a number corresponding to the action you wish to take."
+                        "Unknown command, please type a number corresponding to the action you wish to take.\n"
+                        "If you wish to use default or exit, please ensure your letters are lowercase."
                     )
             
         elif action in "3":

@@ -311,3 +311,18 @@ delay will give the players processing time to understand what is happening.
 Blackjack version beta 3.0.1
 ----------
 - Typo found at beginning, "How many money" changed to "How much money"!
+
+----------
+Blackjack version beta 3.1.0
+----------
+- Moved settings for starting cash and number of rounds to go with the other settings instead of being asked at the start of each game.
+- Unable to add .lower to menu for picking which setting to alter as you can use either letters or numbers. Expanded the "else" to advise that "default" and "exit"
+has to be lowercase.
+- Altered some Try statements within options.py as the last "else" was providing the same error message as "except", so now the last "else" will "raise ValueError"
+to cut down on double entry.
+
+----------
+Blackjack version 3.1.0
+----------
+- Added comment under text_effect showing where Chatgpt was used to assist (slow_type and slow_input)
+- Removed all comments used for testing purposes.

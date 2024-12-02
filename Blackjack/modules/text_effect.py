@@ -22,6 +22,8 @@ def sleep_line():
     divide_lines()
     std_sleep()
 
+### Chatgpt.com was used to assist with creating the slow_input and slow_type functions. ###
+
 # Provide appearance of computer typing instead of text instantly appearing, slightly quicker 
 def slow_input(prompt, delay=0.015):
     slow_type(prompt, delay, end='')  # No newline at the end

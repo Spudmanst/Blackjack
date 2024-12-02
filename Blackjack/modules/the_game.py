@@ -2,15 +2,10 @@ from . import options
 from . import playing_cards
 from . import text_effect
 from . import win_check
-import sys
 
 # Constants for game limits
 MIN_PLAYERS = 1
 MAX_PLAYERS = 7
-MIN_CASH = 10
-MAX_CASH = 10000
-MIN_ROUNDS = 1
-MAX_ROUNDS = 10
 
 class Player:
     def __init__(self, name, number, active = True, bet = 0, cash = 0, 
@@ -92,7 +87,6 @@ def player_actions(player, cards, charlie_on):
                     
                 new_card = cards.pop()
                 # Comment above line and uncomment below line if testing for 5 card charlie
-                # new_card = "Ace of Tests"
                 hand.append(new_card)
                 score = win_check.calculate_score(hand)
                 text_effect.slow_type(
@@ -171,16 +165,19 @@ def player_actions(player, cards, charlie_on):
 
 def start_game(): 
     
+    starting_cash = int(options.variations["starting_cash"])
+    num_of_rounds = int(options.variations["num_of_rounds"])
+    num_of_packs = int(options.variations["num_of_packs"])
+    charlie_active = options.variations["5_card_charlie"]
+    ins_active = options.variations["insurance"]
+    s17_rule = options.variations["s17"]
+    
     """
     Bring in required settings from options. Create variables to ensure we don't
     keep asking the computer to calculate these each time we wish to use them.
     Also grabbing the variables now when the game has started ensures we have the 
     most up to date settings incase the user changes them.
     """
-    num_of_packs = int(options.variations["num_of_packs"])
-    charlie_active = options.variations["5_card_charlie"]
-    ins_active = options.variations["insurance"]
-    s17_rule = options.variations["s17"]
     
     while True:
         try:
@@ -211,38 +208,6 @@ def start_game():
                 break
         except Exception as e:
             print("An error occurred: ", e)
-                        
-    while True:
-        try:
-            starting_cash = int(text_effect.slow_input(
-                f"How much money should all players start with? Minimum ${MIN_CASH}, Maximum ${MAX_CASH}: $"
-                ))
-            if MIN_CASH <= starting_cash <= MAX_CASH:
-                break
-            else:
-                print(
-                    f"Invalid input, must use a whole number between {MIN_CASH} and {MAX_CASH} to continue."
-                )
-        except ValueError:
-            print(
-                f"Invalid input, please enter a whole number between {MIN_CASH} and {MAX_CASH} (don't use commas)."
-            )
-            
-    while True:
-        try:
-            num_of_rounds = int(text_effect.slow_input(
-                f"How many rounds would you like? Minimum {MIN_ROUNDS}, Maximum {MAX_ROUNDS}: "
-                ))
-            if MIN_ROUNDS <= num_of_rounds <= MAX_ROUNDS:
-                break
-            else:
-                print(
-                    f"Invalid input, must use a number between {MIN_ROUNDS} - {MAX_ROUNDS} to continue."
-                )
-        except ValueError:
-            print(
-                f"Invalid input, please enter a number between {MIN_ROUNDS} and {MAX_ROUNDS}."
-            )
     
     # Create empty list, ready to receive player information.
     players = []
@@ -321,11 +286,7 @@ def start_game():
         for player in players:
             if player.active:
                 player.hand1 = [cards.pop() for _ in range(2)]
-                # Comment out above line and use below if testing specific card combinations.
-                # player.hand1 = ["Ace of Tests", "Ace of Tests2"] #cards.pop()]
                 player.score1 = win_check.calculate_score(player.hand1)
-                # Comment out above line if you wish to test when players having specific score
-                # player.score = 21
                 if player.score1 == 21:
                     player.win1 = "Blackjack"
         
@@ -334,11 +295,7 @@ def start_game():
         
         # Deal cards to dealer and check for Blackjack            
         dealer_hand = [cards.pop() for _ in range(2)]
-        # Comment above line out and use the below if you manually wish to test cards
-        # dealer_hand = ["Ace of Tests", "King of Tests"] #cards.pop()]
         dealer_score = win_check.calculate_score(dealer_hand)
-        # Comment out above line if you wish to test when dealer having specific score
-        # dealer_score = 21
         dealer_upcard = dealer_hand[0].split()[0] # used later to allow insurance if allowed.
         win_check.does_dealer_have_blackjack(dealer_score)
         
@@ -366,7 +323,6 @@ def start_game():
                                             f"Player {player.name} wins {text_effect.format_cash(player.bet)} and is out for the rest of the round!"
                                         )
                                     player.win1 = "Take_even"
-                                    # player.active = False
                                     break
                                 elif action in ("no", "n"):
                                     text_effect.slow_type(
