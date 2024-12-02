@@ -87,7 +87,6 @@ def player_actions(player, cards, charlie_on):
                     
                 new_card = cards.pop()
                 # Comment above line and uncomment below line if testing for 5 card charlie
-                # new_card = "Ace of Tests"
                 hand.append(new_card)
                 score = win_check.calculate_score(hand)
                 text_effect.slow_type(
@@ -287,11 +286,7 @@ def start_game():
         for player in players:
             if player.active:
                 player.hand1 = [cards.pop() for _ in range(2)]
-                # Comment out above line and use below if testing specific card combinations.
-                # player.hand1 = ["Ace of Tests", "Ace of Tests2"] #cards.pop()]
                 player.score1 = win_check.calculate_score(player.hand1)
-                # Comment out above line if you wish to test when players having specific score
-                # player.score = 21
                 if player.score1 == 21:
                     player.win1 = "Blackjack"
         
@@ -300,11 +295,7 @@ def start_game():
         
         # Deal cards to dealer and check for Blackjack            
         dealer_hand = [cards.pop() for _ in range(2)]
-        # Comment above line out and use the below if you manually wish to test cards
-        # dealer_hand = ["Ace of Tests", "King of Tests"] #cards.pop()]
         dealer_score = win_check.calculate_score(dealer_hand)
-        # Comment out above line if you wish to test when dealer having specific score
-        # dealer_score = 21
         dealer_upcard = dealer_hand[0].split()[0] # used later to allow insurance if allowed.
         win_check.does_dealer_have_blackjack(dealer_score)
         
@@ -332,7 +323,6 @@ def start_game():
                                             f"Player {player.name} wins {text_effect.format_cash(player.bet)} and is out for the rest of the round!"
                                         )
                                     player.win1 = "Take_even"
-                                    # player.active = False
                                     break
                                 elif action in ("no", "n"):
                                     text_effect.slow_type(
