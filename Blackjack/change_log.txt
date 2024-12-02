@@ -326,3 +326,7 @@ Blackjack version 3.1.0
 ----------
 - Added comment under text_effect showing where Chatgpt was used to assist (slow_type and slow_input)
 - Removed all comments used for testing purposes.
+----------
+Blackjack version 3.1.1
+----------
+- Added : to questions on how much money and how many rounds to keep consistent with the rest of the options.

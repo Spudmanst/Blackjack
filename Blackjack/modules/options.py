@@ -77,7 +77,7 @@ def main():
                     while True:
                         try:
                             action = text_effect.slow_input(
-                                "How much should each player start with? Whole number between 10 & 10,000.\n$"
+                                "How much should each player start with? Whole number between 10 & 10,000: $"
                             )
                             if 10 <= int(action) <= 10000:
                                 variations["starting_cash"] = int(action)
@@ -99,7 +99,7 @@ def main():
                     )
                     while True:
                         action = text_effect.slow_input(
-                            "Please advise how many rounds you would like, between 1 & 10."
+                            "Please advise how many rounds you would like, between 1 & 10: "
                         )
                         try:
                             if 1 <= int(action) <= 10:
