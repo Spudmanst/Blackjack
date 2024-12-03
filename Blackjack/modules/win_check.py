@@ -3,13 +3,14 @@ from . import playing_cards
 from . import text_effect
 
 # Prep to check for Aces If player "bust" and change score
+# ace_count is also used to see if player is on "Soft" or "Hard" score, i.e. if they have at least one Ace being counted as 11 points.
 def calculate_score(hand):
     score = sum(playing_cards.scores[card.split()[0]] for card in hand)
     ace_count = sum(1 for card in hand if card.split()[0] == "Ace")
     while score > 21 and ace_count > 0:
         score -= 10
         ace_count -= 1
-    return score
+    return score, ace_count
 
 def charlie_check(hand, score):
     if len(hand) == 5 and score < 22:

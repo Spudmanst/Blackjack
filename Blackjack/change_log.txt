@@ -326,7 +326,17 @@ Blackjack version 3.1.0
 ----------
 - Added comment under text_effect showing where Chatgpt was used to assist (slow_type and slow_input)
 - Removed all comments used for testing purposes.
+
 ----------
 Blackjack version 3.1.1
 ----------
 - Added : to questions on how much money and how many rounds to keep consistent with the rest of the options.
+
+----------
+Blackjack version 3.1.2
+----------
+- Noticed that the dealer logic needs correcting from "while dealer_score < 17" to "while dealer_score < 16" (line 506) as the dealer should Stand on 17.
+- Noticed that the H17 true (S17 == false) only works when the dealer has two cards when it should be whenever they have a soft score of 17, i.e. an Ace being used as 11
+points. Altered the win_check calculate_score to return the number of aces being counted as 11 as well so we can alter the logic for the dealer to "hit" if they have 
+a soft score of 17 when S17 == false. This did mean going back into the other uses of calculate_score and ignoring the new return value.
+- readme.md added as per Final Project submittion requirements.

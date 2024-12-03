@@ -88,7 +88,7 @@ def player_actions(player, cards, charlie_on):
                 new_card = cards.pop()
                 # Comment above line and uncomment below line if testing for 5 card charlie
                 hand.append(new_card)
-                score = win_check.calculate_score(hand)
+                score, _ = win_check.calculate_score(hand)
                 text_effect.slow_type(
                     f"Card received: {new_card}\nNew score: {score}"
                 )
@@ -117,13 +117,13 @@ def player_actions(player, cards, charlie_on):
                 split_card = hand.pop()
                 new_card = cards.pop()
                 hand.append(new_card)
-                score = win_check.calculate_score(hand)
+                score, _ = win_check.calculate_score(hand)
                 text_effect.slow_type(
                     f"Card received: {new_card}\nNew Hand: {hand[0]} and {hand[1]}\nNew score: {score}"
                 )
                 player.hand2.append(split_card)
                 player.hand2.append(cards.pop())
-                player.score2 = win_check.calculate_score(player.hand2)
+                player.score2, _ = win_check.calculate_score(player.hand2)
                 
                 # Take cash for the split bet
                 player.cash -= player.bet
@@ -286,7 +286,7 @@ def start_game():
         for player in players:
             if player.active:
                 player.hand1 = [cards.pop() for _ in range(2)]
-                player.score1 = win_check.calculate_score(player.hand1)
+                player.score1, _ = win_check.calculate_score(player.hand1)
                 if player.score1 == 21:
                     player.win1 = "Blackjack"
         
@@ -295,7 +295,7 @@ def start_game():
         
         # Deal cards to dealer and check for Blackjack            
         dealer_hand = [cards.pop() for _ in range(2)]
-        dealer_score = win_check.calculate_score(dealer_hand)
+        dealer_score, dealer_ace = win_check.calculate_score(dealer_hand) # dealer_ace is used for s17 == false variation
         dealer_upcard = dealer_hand[0].split()[0] # used later to allow insurance if allowed.
         win_check.does_dealer_have_blackjack(dealer_score)
         
@@ -503,10 +503,10 @@ def start_game():
                         text_effect.std_sleep()                            
 
                         # Dealer must obtain new card until their score is above 16 (casino rules)
-                        while dealer_score < 17 or (dealer_score == 17 and len(dealer_hand) == 2 and not s17_rule):
+                        while dealer_score < 16 or (dealer_score == 17 and dealer_ace != 0 and not s17_rule):
                             new_card = cards.pop()
                             dealer_hand.append(new_card)
-                            dealer_score = win_check.calculate_score(dealer_hand)
+                            dealer_score, dealer_ace = win_check.calculate_score(dealer_hand)
                             text_effect.slow_type(
                                 f"Dealer receives: {new_card}\nDealer's new score: {dealer_score}"
                             )
