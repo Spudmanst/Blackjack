@@ -503,7 +503,7 @@ def start_game():
                         text_effect.std_sleep()                            
 
                         # Dealer must obtain new card until their score is above 16 (casino rules)
-                        while dealer_score < 16 or (dealer_score == 17 and dealer_ace != 0 and not s17_rule):
+                        while dealer_score < 17 or (dealer_score == 17 and dealer_ace != 0 and not s17_rule):
                             new_card = cards.pop()
                             dealer_hand.append(new_card)
                             dealer_score, dealer_ace = win_check.calculate_score(dealer_hand)

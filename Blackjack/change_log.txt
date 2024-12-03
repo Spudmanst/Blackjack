@@ -340,3 +340,8 @@ Blackjack version 3.1.2
 points. Altered the win_check calculate_score to return the number of aces being counted as 11 as well so we can alter the logic for the dealer to "hit" if they have 
 a soft score of 17 when S17 == false. This did mean going back into the other uses of calculate_score and ignoring the new return value.
 - readme.md added as per Final Project submittion requirements.
+
+----------
+Blackjack version 3.1.3
+----------
+- Revert previous change of "while dealer_score < 16" back to "while dealer_score < 17" (line 506) as I misread my code in a moment of confusion.
